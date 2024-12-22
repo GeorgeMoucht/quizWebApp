@@ -1,0 +1,18 @@
+# Virtual enviroment
+myenv/
+
+# Python cache
+__pycache/
+*.pyc
+
+# Django migrations
+*.log
+*.pot
+*.pyc
+db.sqlite3
+
+# Media/uploads
+media/
+
+# Enviroment variables
+.env
