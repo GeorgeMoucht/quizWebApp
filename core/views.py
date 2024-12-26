@@ -4,6 +4,9 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import get_template
 
 def homepage_view(request):
+    """
+    View function that renders the homepage template.
+    """
     try:
         get_template('core/homepage.html')
         return render(request, 'core/homepage.html')
