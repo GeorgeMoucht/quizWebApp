@@ -16,3 +16,5 @@ media/
 
 # Enviroment variables
 .envgit
+
+.idea/
