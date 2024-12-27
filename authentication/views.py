@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from .forms import CustomUserCreationForm
 
 # Register view
 def register_view(request):
@@ -23,7 +24,7 @@ def register_view(request):
                       to the login page.
     """
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             
@@ -34,7 +35,7 @@ def register_view(request):
             )
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(
         request,
         'authentication/register.html',
