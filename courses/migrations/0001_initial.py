@@ -23,5 +23,11 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('teacher', models.ForeignKey(limit_choices_to={'groups__name': 'Teacher'}, on_delete=django.db.models.deletion.CASCADE, related_name='courses', to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+                # Add custom permission
+                'permissions': [
+                    ('enroll_in_course', 'Can enroll in course')
+                ]
+            }
         ),
     ]
