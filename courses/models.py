@@ -30,6 +30,11 @@ class Course(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        permissions = [
+            ('enroll_in_course', 'Can enroll in course')
+        ]
+
     def __str__(self):
         """
         String representation of the course.
