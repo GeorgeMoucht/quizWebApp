@@ -17,18 +17,11 @@ class Profile(models.Model):
     Methods:
         __str__(self): Returns a string representation of the profile.
     """
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name="profile"
-    )
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(
-        upload_to='avatars/',
-        blank=True,
-        null=True
-        )
+    avatar = models.ImageField(default='profile_pics/default_pic.jpg', upload_to='profile_pics',null=True)
     
+   
     def __str__(self):
         """
         Returns a string representation of the Profile object.
