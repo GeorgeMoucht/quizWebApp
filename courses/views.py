@@ -1,9 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponseForbidden
-from .models import Course
-from core.utils import is_teacher
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
+from .models import Course, Enrollment
+from django.contrib.auth.decorators import login_required
 
-def course_list_view(response):
+
+def course_list_view(request):
     """
     Displays a list of all available courses.
 
@@ -25,22 +26,35 @@ def course_list_view(response):
         {'courses': courses}
     )
 
-def create_course_view(request):
+@login_required
+def enroll_course_view(request, course_id):
     """
-    Allows a teacher to create a new course.
-
-    This view is accessible only by users with the 'Teacher' role.
-    If the user is not a teacher, an HTTP 403 (Forbidden) response
-    is returned. Otherwise, the view should render a form for the
-    teacher to create a new course.
+    Handles enrolling a user into a course.
 
     Args:
-        request (HttpRequest): The request object containing metadata
-                    about the request.
-        
+        request (HttpRequest): The request object.
+        course_id (int): The ID of the course to enroll in.
+
     Returns:
-        HttpResponse: An HTTP response. Either a forbidden response for
-        non-teachers or a form for course creation.
+        HttpResponse: Redirects to the course list after enrolling.
     """
-    if not is_teacher(request.user):
-        return HttpResponseForbidden("Only teacher can create courses.")
+    course = get_object_or_404(Course, id=course_id)
+
+    if request.method == 'POST':
+        entered_password = request.POST.get('password', '')
+
+        # Check if the password is correct
+        if course.password and course.password == entered_password:
+            # Check if the user is already enrolled
+            if Enrollment.objects.filter(course=course, student=request.user).exists():
+                return HttpResponse("You are already enrolled in this course.", status=400)
+
+            # Enroll the user in the course (explicitly setting enrolled_at)
+            Enrollment.objects.create(
+                course=course,
+                student=request.user,
+            )
+            return HttpResponse("Enrollment successful")
+        else:
+            return HttpResponse("Enrollment failed. Incorrect password.", status=403)
+    return redirect('course_list')

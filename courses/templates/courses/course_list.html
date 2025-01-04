@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Home - My Education App{% endblock %}
+
+{% block content %}
+    <h1>Available Courses</h1>
+
+    {% if courses %}
+        <ul>
+            {% for course in courses %}
+                <li>
+                    <h2>{{ course.title }}</h2>
+                    <p>{{ course.description }}</p>
+                    <p>
+                        <strong>Teacher:</strong> {{ course.teacher }}
+                    </p>
+                    <form 
+                        method="post"
+                        action="{% url 'enroll_course' course.id %}"
+                    >
+                        {% csrf_token %}
+                        <label for="password-{{ course.id }}">
+                            Enter Course Password:
+                        </label>
+                        <input
+                            type="password"
+                            id="password-{{ corse.id }}"
+                            name="password"
+                            placeholder="Enter course password"
+                            required
+                        >
+                        <button type="submit">Enroll</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No courses are currently available.</p>
+    {% endif %}
+{% endblock %}
