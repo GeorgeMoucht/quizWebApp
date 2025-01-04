@@ -7,9 +7,10 @@ urlpatterns = [
         views.course_list_view,
         name='course_list'
     ),
+
     path(
-        'courses/create',
-        views.create_course_view,
-        name='create_course'
+        'courses/enroll/<int:course_id>/',
+        views.enroll_course_view,
+        name='enroll_course'
     )
 ]

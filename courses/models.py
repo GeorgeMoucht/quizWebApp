@@ -29,6 +29,15 @@ class Course(models.Model):
         limit_choices_to={'groups__name': 'Teacher'}
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    password = models.CharField(max_length=100, null=True, blank=True)
+
+    # Define many to many relationship
+    students = models.ManyToManyField(
+        User,
+        through='Enrollment',
+        related_name='courses_enrolled',
+        blank=True
+    )
 
     class Meta:
         permissions = [
@@ -43,3 +52,35 @@ class Course(models.Model):
             str: A string that returns the course title.
         """
         return self.title
+
+
+class Enrollment(models.Model):
+    """
+    Represents the enrollment of a student in a course.
+
+    This model tracks which student are enrolled in which courses
+    and stores the enrollment date.
+
+    Attributes:
+        student (ForeignKey): The student (user) enrolled in the course.
+        course (ForeignKey): The course in which the student is enrolled.
+        enrolled_at (DateTimeField): The date and time when the student
+            enrolled.
+    """
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="enrollments"
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="enrollments"
+    )
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'course')
+
+    def __str__(self):
+        return f"{self.student.username} enrolled in {self.course.title}"
