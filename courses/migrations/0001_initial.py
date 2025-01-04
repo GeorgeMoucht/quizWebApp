@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('teacher', models.ForeignKey(limit_choices_to={'groups__name': 'Teacher'}, on_delete=django.db.models.deletion.CASCADE, related_name='courses', to=settings.AUTH_USER_MODEL)),
+                ('password', models.CharField(max_length=100, null=True, blank=True))
             ],
             options={
                 # Add custom permission
