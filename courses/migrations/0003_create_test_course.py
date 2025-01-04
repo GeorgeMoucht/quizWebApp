@@ -16,7 +16,8 @@ def create_test_course(apps, schema_editor):
         Course.objects.create(
             title='Test Course',
             description='This is a test course for testing purposes.',
-            teacher=test_teacher
+            teacher=test_teacher,
+            password='coursepassword'
         )
 
 class Migration(migrations.Migration):
