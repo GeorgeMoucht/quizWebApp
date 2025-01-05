@@ -46,11 +46,13 @@ def create_student_and_teacher_users(apps, schema_editor):
 
         # Create Profiles for Student and Teacher users
         Profile.objects.get_or_create(user=student_user, defaults={
-            'bio': 'This is a student profile.... blah blah blah...'
+            'bio': 'This is a student profile....',
+            'avatar': 'profiles_pics/default_pic.jpg'
         })
 
         Profile.objects.get_or_create(user=teacher_user, defaults={
-            'bio': 'This is teacher profile blah blah blah...'
+            'bio': 'This is a teacher profile....',
+            'avatar': 'profiles_pics/default_pic.jpg'
         })
     except Group.DoesNotExist:
         print("Required groups 'Student' or 'Teacher' do not exist.")
