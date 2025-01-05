@@ -4,26 +4,25 @@ from .models import Course, Enrollment
 from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def course_list_view(request):
     """
-    Displays a list of all available courses.
-
-    This view retrieves all courses from the database and renders
-    them on the 'course_list.html' template. It allows users to see
-    the titles and descriptions of the courses.
-
-    Args: 
-        request (HttpRequest): The request object that contains
-                metadata about the request.
-    
-    Returns: The rendered 'courses/courses/course_list.html' template
-            with the list of courses.
+    Display a list of all available courses and indicates whether
+    the logged-in user is already enrolled.
     """
+    user_enrollments = Enrollment.objects.filter(
+        student=request.user
+    ).values_list('course_id', flat=True)
+
     courses = Course.objects.all()
+
     return render(
         request,
         'courses/course_list.html',
-        {'courses': courses}
+        {
+            'courses': courses,
+            'user_enrollments': set(user_enrollments)
+        }
     )
 
 @login_required

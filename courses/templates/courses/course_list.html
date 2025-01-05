@@ -14,23 +14,28 @@
                     <p>
                         <strong>Teacher:</strong> {{ course.teacher }}
                     </p>
-                    <form 
-                        method="post"
-                        action="{% url 'enroll_course' course.id %}"
-                    >
-                        {% csrf_token %}
-                        <label for="password-{{ course.id }}">
-                            Enter Course Password:
-                        </label>
-                        <input
-                            type="password"
-                            id="password-{{ corse.id }}"
-                            name="password"
-                            placeholder="Enter course password"
-                            required
+
+                    {% if course.id in user_enrollments %}
+                        <p>You are already enrolled in this course.</p>
+                    {% else %}
+                        <form 
+                            method="post"
+                            action="{% url 'enroll_course' course.id %}"
                         >
-                        <button type="submit">Enroll</button>
-                    </form>
+                            {% csrf_token %}
+                            <label for="password-{{ course.id }}">
+                                Enter Course Password:
+                            </label>
+                            <input
+                                type="password"
+                                id="password-{{ corse.id }}"
+                                name="password"
+                                placeholder="Enter course password"
+                                required
+                            >
+                            <button type="submit">Enroll</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
