@@ -15,13 +15,13 @@ class CustomUserCreationForm(UserCreationForm):
     
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
-        if not re.match(r'^[α-ωΑ-Ω]+$', first_name):
+        if not re.match(r'^[α-ωΑ-Ωa-zA-Z]+$', first_name):
             raise forms.ValidationError("Το όνομα μπορεί να περιέχει μόνο γράμματα.")
         return first_name
 
     def clean_last_name(self):
         last_name = self.cleaned_data.get('last_name')
-        if not re.match(r'^[α-ωΑ-Ω]+$', last_name):
+        if not re.match(r'^[α-ωΑ-Ωa-zA-Z]+$', last_name):
             raise forms.ValidationError("Το επώνυμο μπορεί να περιέχει μόνο γράμματα.")
         return last_name
 

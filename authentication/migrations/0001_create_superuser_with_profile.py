@@ -22,7 +22,7 @@ def create_superuser_with_profile(apps, schema_editor):
 
     if created:
         # Created the associated profile
-        Profile.objects.create(user=superuser, bio="Admin Profile")
+        Profile.objects.create(user=superuser, bio="Admin Profile",avatar='profiles_pics/default_pic.jpg')
         print('Superuser with profile created.')
     else:
         print('Superuser already exists.')

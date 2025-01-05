@@ -1,6 +1,9 @@
-from django.shortcuts import render
+# profile/views.py
+
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Profile
+from .forms import ProfileUpdateForm
 
 # Create your views here.
 @login_required
@@ -29,4 +32,18 @@ def profile_view(request):
     """
     # profile = request.user.profile
     profile = Profile.objects.get(user=request.user)
-    return render(request, 'profile/profile.html', {'profile': profile})
+    form = ProfileUpdateForm(instance=profile)
+
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile_view')  # Προσθέστε το κατάλληλο URL εδώ
+
+    context = {
+        'profile': profile,
+        'form': form
+    }
+    
+    return render(request, 'profile/profile.html', context)
+
