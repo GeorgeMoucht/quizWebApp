@@ -31,14 +31,11 @@ class CustomUserAdmin(UserAdmin):
     # Sets the column title in the admin panel for the 'get_roles'.
     get_roles.short_description = 'Roles'
 
-class ProfileAdmin(admin.ModelAdmin):
-        list_display = ('user', 'bio', 'avatar')  # Πεδία που θα εμφανίζονται
-        fields = ('user', 'bio', 'avatar')  # Πεδία που μπορεί να επεξεργαστεί ο admin
-        readonly_fields = ('user',)
-    
+
+ 
 # Unregister the default UserAdmin and register the custom one
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
-admin.site.register(Profile, ProfileAdmin)
+
 
