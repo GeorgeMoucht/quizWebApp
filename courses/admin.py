@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Course, Enrollment
+from .models import Course, Enrollment, Lesson
+from django.urls import reverse
+from django.utils.html import format_html
 
 class EnrollmentInline(admin.TabularInline):
     model = Enrollment
@@ -21,13 +23,34 @@ class EnrollmentInline(admin.TabularInline):
         return False
 
 
+class LessonInline(admin.TabularInline):
+    """
+    Inline display of lessons associated with a course.
+    """
+    model = Lesson
+    extra = 0  # No extra empty forms
+    readonly_fields = ('lesson_title', 'created_at')  # Show only non-editable fields
+    can_delete = True  # Allow deleting lessons
+
+    def lesson_title(self, obj):
+        """
+        Custom method to render the lesson title as a clickable link to its edit page.
+        """
+        # Get the URL to the lesson change page
+        url = reverse('admin:courses_lesson_change', args=[obj.pk])
+        return format_html('<a href="{}">{}</a>', url, obj.title)
+    
+    lesson_title.short_description = 'Lesson Title'  # Optional: Customize column header
+    exclude = ('title', 'description', 'attachment')  # Hide these fields from display
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     """
     Admin interface for managing the Course model.
     """
     list_display = ('title', 'teacher', 'created_at')
-    inlines = [EnrollmentInline]
+    # inlines = [EnrollmentInline, LessonInline]
+    inlines = [EnrollmentInline, LessonInline]
 
     def save_model(self, request, obj, form, change):
         """
@@ -59,6 +82,27 @@ class CourseAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(teacher=request.user)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        """
+        Override the change view to include a custom section
+        for listing lessons.
+        """
+        course = self.get_object(request, object_id)
+        if course:
+            lessons = course.lessons.all()
+            extra_context = extra_context or {}  # Ensure extra_context is initialized
+            extra_context['lessons'] = lessons
+
+            # Add a URL to add a new lesson
+            add_lesson_url = reverse('admin:courses_lesson_add') + f"?course={course.id}"
+            extra_context['add_lesson_url'] = add_lesson_url
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
+@admin.register(Lesson)
+class LessonAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):

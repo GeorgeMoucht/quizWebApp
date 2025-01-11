@@ -53,6 +53,27 @@ class Course(models.Model):
         """
         return self.title
 
+class Lesson(models.Model):
+    """
+    Represents a lesson in a course.
+    """
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    attachment = models.FileField(
+        upload_to='lessons/attachments',
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='lessons'
+    )
+
+    def __str__(self):
+        return self.title
 
 class Enrollment(models.Model):
     """
