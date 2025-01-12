@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "main.css",
+	"sources": [
+		"main.scss",
+		"../../core/static/core/styles.scss"
+	],
+	"names": [],
+	"mappings": "ACAA,AAAA,CAAC,CAAC;EACE,gBAAgB,EAAE,GAAG,GACxB"
+}
