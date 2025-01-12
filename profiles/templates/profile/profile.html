@@ -6,11 +6,22 @@
 <p>Email: {{ profile.user.email }}</p>
 <p>Bio: {{ profile.bio }}</p>
 <p>Avatar: <img src="{{ profile.avatar.url }}" alt="Profile Picture" width="150" height="150"><p>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" style="max-width: 400px;">
     {% csrf_token %}
-    {{ form.as_p }}
+    
+    <h5 style="color: blue;">ΕΠΕΞΕΡΓΑΣΙΑ ΣΤΟΙΧΕΙΩΝ<h5>
+    
+    <div style="margin-bottom: 15px;">
+        <label for="id_bio">Bio:</label>
+        <br>
+        {{ form.bio }}  
+    </div>
+    
+    <div style="margin-bottom: 15px;">      
+        {{ form.avatar }}
+    </div>
+    
     <button type="submit">Αποθήκευση</button>
 </form>
-
 {% endblock %}
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from profiles.models import Profile
 
 class CustomUserAdmin(UserAdmin):
     """
@@ -30,6 +31,11 @@ class CustomUserAdmin(UserAdmin):
     # Sets the column title in the admin panel for the 'get_roles'.
     get_roles.short_description = 'Roles'
 
+
+ 
 # Unregister the default UserAdmin and register the custom one
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
+
+
+
