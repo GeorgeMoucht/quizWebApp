@@ -64,4 +64,36 @@ class Migration(migrations.Migration):
                                              to='courses.Course')),
             ],
         ),
+
+        #Create the Course table
+        migrations.CreateModel(
+            name='Quiz',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=255, verbose_name='Τίτλος')),
+                ('summary', models.TextField(blank=True, null=True, verbose_name='Σύντομη Περιγραφή')),
+                ('type', models.PositiveSmallIntegerField(
+                    choices=[
+                        (1, 'Multiple Choice'),
+                        (2, 'True/False'),
+                        (3, 'Short Answer'),
+                    ],
+                    default=1,
+                    verbose_name='Τύπος'
+                )),
+                ('score', models.DecimalField(max_digits=5, decimal_places=2, default=0.00, verbose_name='Βαθμολογία')),
+                ('published', models.BooleanField(default=False, verbose_name='Δημοσιευμένο')),
+                ('published_at', models.DateTimeField(blank=True, null=True, verbose_name='Ημερομηνία Δημοσίευσης')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Ημερομηνία Δημιουργίας')),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Ημερομηνία Τελευταίας Ενημέρωσης')),
+                ('content', models.TextField(blank=True, null=True, verbose_name='Περιεχόμενο')),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='quizzes',
+                    to='courses.Course',
+                    verbose_name='Μάθημα'
+                )),
+            ],
+        ),
     ]
+   

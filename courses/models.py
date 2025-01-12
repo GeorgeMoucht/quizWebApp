@@ -105,3 +105,30 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.student.username} enrolled in {self.course.title}"
+    
+    
+class Quiz(models.Model):
+    title = models.CharField(max_length=255)
+    summary = models.TextField(blank=True, null=True)
+    type = models.PositiveSmallIntegerField(
+        choices=[
+            (1, "Multiple Choice"),
+            (2, "True/False"),
+            (3, "Short Answer")
+        ],
+        default=1
+    )
+    score = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    published = models.BooleanField(default=False)
+    published_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    content = models.TextField(blank=True, null=True)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="quizzes"
+    )
+
+    def __str__(self):
+        return f"{self.title} ({self.course.title})"
