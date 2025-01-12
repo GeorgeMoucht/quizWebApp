@@ -95,5 +95,69 @@ class Migration(migrations.Migration):
                 )),
             ],
         ),
+
+        # Create the QuizQuestion table
+        migrations.CreateModel(
+            name='Question',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('type', models.PositiveSmallIntegerField(
+                    choices=[
+                    (1, 'Multiple Choice'),
+                    (2, 'True/False'),
+                    (3, 'Short Answer')
+                    ],
+                    default=1,
+                    verbose_name='Question Type'
+                )),
+                ('active', models.BooleanField(default=True, verbose_name='Active')),
+                ('level', models.PositiveSmallIntegerField(
+                    choices=[
+                    (1, 'Easy'),
+                    (2, 'Medium'),
+                    (3, 'Difficult')
+                    ],
+                    default=1,
+                    verbose_name='Difficulty Level'
+                )),
+                ('score', models.DecimalField(max_digits=5, decimal_places=2, default=0.00, verbose_name='Score')),
+                ('content', models.TextField(verbose_name='Question Content')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated At')),
+                ('quiz', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='questions',
+                    to='courses.quiz',
+                    verbose_name='Quiz'
+                )),
+            ],
+        ),
+
+        # Create the QuizAnswer table
+        migrations.CreateModel(
+            name='Answer',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('active', models.BooleanField(default=True, verbose_name='Active')),
+                ('correct', models.BooleanField(default=False, verbose_name='Correct')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
+                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated At')),
+                ('content', models.TextField(verbose_name='Content')),
+                ('quiz', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='answers',
+                    to='courses.Quiz',
+                    verbose_name='Quiz'
+                )),
+                ('question', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='answers',
+                    to='courses.Question',
+                    verbose_name='Question'
+                )),
+            ],
+        ),
+
+
     ]
    

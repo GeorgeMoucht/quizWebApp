@@ -132,3 +132,65 @@ class Quiz(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.course.title})"
+
+
+class Question(models.Model):
+    """
+    Represents a question belonging to a quiz.
+    """
+    QUESTION_TYPE_CHOICES = [
+        (1, "Multiple Choice"),
+        (2, "True/False"),
+        (3, "Short Answer"),
+    ]
+
+    QUESTION_LEVEL_CHOICES = [
+        (1, "Easy"),
+        (2, "Medium"),
+        (3, "Difficult"),
+    ]
+
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE,
+        related_name="questions",
+        verbose_name="Quiz"
+    )
+    type = models.PositiveSmallIntegerField(
+        choices=QUESTION_TYPE_CHOICES,
+        default=1,
+        verbose_name="Question Type"
+    )
+    active = models.BooleanField(default=True, verbose_name="Active")
+    level = models.PositiveSmallIntegerField(
+        choices=QUESTION_LEVEL_CHOICES,
+        default=1,
+        verbose_name="Difficulty Level"
+    )
+    score = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        verbose_name="Score"
+    )
+    content = models.TextField(verbose_name="Question Content")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+
+    def __str__(self):
+        return f"Question: {self.content[:50]} (Quiz: {self.quiz.title})"
+    
+class Answer(models.Model):
+    content = models.TextField()
+    is_correct = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
+
+    def __str__(self):
+        return f"Answer for Question ID {self.question.id}: {self.content[:50]}"
+    
