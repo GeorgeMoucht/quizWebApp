@@ -1,0 +1,279 @@
+// // Variables
+// $primary-color: #333;
+// $secondary-color: #555;
+// $text-color: #fff;
+// $hover-color: #f0f0f0;
+// $breakpoint: 768px;
+
+// // Mixins
+// @mixin flex-center {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+
+// @mixin transition($property, $duration: 0.3s, $ease: ease-in-out) {
+//     transition: $property $duration $ease;
+// }
+
+// .navbar {
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     background-color: $primary-color;
+//     padding: 1rem 2rem;
+//     color: $text-color;
+//     // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+//     .logo {
+//         a {
+//             text-decoration: none;
+//             color: $text-color;
+//             font-size: 1.5rem;
+//             font-weight: bold;
+
+//             img {
+//                 max-width: 40px;
+//                 height: auto;
+//             }
+//         }
+//     }
+
+//     .nav-links {
+//         display: flex;
+//         list-style: none;
+//         margin: 0;
+//         padding: 0;
+
+//         li {
+//             margin: 0 1rem;
+
+//             a {
+//                 color: $text-color;
+//                 text-decoration: none;
+//                 font-weight: 500;
+//                 padding: 0.5rem 1rem;
+//                 border-radius: 4px;
+
+//                 @include transition(all);
+
+//                 &:hover {
+//                     background-color: $hover-color;
+//                     color: $primary-color;
+//                 }
+//             }
+//         }
+//     }
+
+//     .hamburger {
+//         display: none;
+//         cursor: pointer;
+
+//         div {
+//             width: 25px;
+//             height: 3px;
+//             background-color: $text-color;
+//             margin: 5px 0;
+//             @include transition(all);
+//         }
+
+//         &:hover div {
+//             background-color: $hover-color;
+//         }
+//     }
+
+
+//     .auth-links {
+//         @include flex-center;
+
+//         a {
+//             color: $text-color;
+//             text-decoration: none;
+//             font-weight: 500;
+//             margin-left: 1rem;
+
+//             @include transition(color);
+
+//             &:hover {
+//                 color: $hover-color;
+//             }
+//         }
+//     }
+// }
+
+
+// // Responsive Styles
+// @media (max-width: $breakpoint) {
+//     .nav-links {
+//         // display: none;
+//         flex-direction: column;
+//         position: absolute;
+//         top: 100%;
+//         left: 0;
+//         width: 10px;
+//         background-color: $primary-color;
+
+//         li {
+//             text-align: center;
+//             margin: 0;
+
+//             a {
+//                 display: block;
+//                 padding: 1rem;
+//             }
+//         }
+//     }
+
+//     .nav-links.open {
+//         display: flex;
+//     }
+
+//     .hamburger {
+//         display: block;
+//     }
+// }
+
+// Variables
+$primary-color: #333;
+$text-color: #fff;
+$hover-color: #f0f0f0;
+$breakpoint: 768px;
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin transition($property, $duration: 0.3s, $ease: ease-in-out) {
+    transition: $property $duration $ease;
+}
+
+// Navigation Styles
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $primary-color;
+    padding: 1rem 2rem;
+    color: $text-color;
+    position: relative;
+
+    .logo {
+        a {
+            text-decoration: none;
+            color: $text-color;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        img {
+            max-width: 40px;
+        }
+    }
+}
+
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li { 
+        margin: 0 1rem;
+
+        a {
+            text-decoration: none;
+            color: $text-color;
+            padding: 0.5rem 1rem;
+            @include transition(all);
+
+            &:hover {
+                background-color: $hover-color;
+                color: $primary-color;
+            }
+        }
+    }
+
+    &.open {
+        display: flex;
+    }
+}
+
+// Hamburger Menu
+.hamburger {
+    display: none;
+    cursor: pointer;
+    z-index: 1000;
+    position: relative;
+
+    .bar {
+        width: 25px;
+        height: 2px;
+        background-color: $text-color;
+        margin: 5px 0;
+        @include transition(all 0.5s ease);
+
+        &:hover {
+            background-color: $hover-color;
+        }
+    }
+
+    &.open {
+        .bar:nth-child(1) {
+            transform: rotate(45deg);
+            position: absolute;
+            top: 0;
+        }
+
+        .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .bar:nth-child(3) {
+            transform: rotate(-45deg);
+            position: absolute;
+            bottom: 0;
+        }
+    }
+}
+
+// Responsive Styles (for mobile view)
+@media (max-width: $breakpoint) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: $primary-color;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        li {
+            text-align: center;
+            margin: 0;
+
+            a {
+                display: block;
+                padding: 1rem;
+                border-top: 1px solid #444;
+            }
+
+            &:first-child a {
+                border-top: none;
+            }
+        }
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
