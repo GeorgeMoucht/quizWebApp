@@ -1,14 +1,27 @@
 {% extends "core/base.html" %}
 
 {% block content %}
-    <h1>Your Enrolled Courses</h1>
-    {% if enrolled_courses %}
+<h1>Enrolled Courses</h1>
+<ul>
+    {% for item in courses_with_lessons %}
+    <li>
+        <h2>{{ item.course.title }}</h2>
+        <p>{{ item.course.description }}</p>
         <ul>
-            {% for course in enrolled_courses %}
-                <li>{{ course.title }} - {{ course.description }}</li>
+            {% for lesson in item.lessons %}
+            <li>
+                <h3>{{ lesson.title }}</h3>
+                <p>{{ lesson.description }}</p>
+                {% if lesson.attachment %}
+                <p>
+                    Attachment: 
+                    <a href="{{ lesson.attachment.url }}" download>{{ lesson.attachment.name }}</a>
+                </p>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
-    {% else %}
-        <p>You are not enrolled in any courses yet.</p>
-    {% endif %}
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
