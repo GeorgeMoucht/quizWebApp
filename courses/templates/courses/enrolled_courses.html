@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+    <h1>Your Enrolled Courses</h1>
+    {% if enrolled_courses %}
+        <ul>
+            {% for course in enrolled_courses %}
+                <li>{{ course.title }} - {{ course.description }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not enrolled in any courses yet.</p>
+    {% endif %}
+{% endblock %}

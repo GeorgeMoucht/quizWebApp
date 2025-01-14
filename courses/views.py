@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Course, Enrollment
 from django.contrib.auth.decorators import login_required
+from .models import Course
 
 
 @login_required
@@ -57,3 +58,11 @@ def enroll_course_view(request, course_id):
         else:
             return HttpResponse("Enrollment failed. Incorrect password.", status=403)
     return redirect('course_list')
+
+@login_required
+def enrolled_courses_view(request):
+    """
+    View για να εμφανίζει τα μαθήματα στα οποία είναι εγγεγραμμένος ο χρήστης.
+    """
+    enrolled_courses = request.user.courses_enrolled.all()  # Παίρνουμε τα μαθήματα μέσω του related_name
+    return render(request, 'courses/enrolled_courses.html', {'enrolled_courses': enrolled_courses})

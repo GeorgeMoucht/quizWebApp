@@ -193,4 +193,71 @@ class Answer(models.Model):
 
     def __str__(self):
         return f"Answer for Question ID {self.question.id}: {self.content[:50]}"
+
+class Take(models.Model):
+    """
+    Represents an attempt by a user to complete a quiz.
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='takes',
+        verbose_name="User"
+    )
+    quiz = models.ForeignKey(
+        Quiz,
+        on_delete=models.CASCADE,
+        related_name='takes',
+        verbose_name="Quiz"
+    )
+    score = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        verbose_name="Score"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Started At"
+    )
+    finished_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Finished At"
+    )
+
+    def __str__(self):
+        """
+        String representation of the Take.
+        """
+        return f"User {self.user.username} - Quiz {self.quiz.title} - Score {self.score}"  
+
+class TakeAnswer(models.Model):
+    """
+    Represents an answer submitted during a quiz attempt.
+
+    Attributes:
+        take (ForeignKey): Reference to the Take instance (quiz attempt).
+        answer (ForeignKey): Reference to the Answer instance.
+        created_at (DateTimeField): Timestamp of when the answer was submitted.
+        content (TextField): If the answer is of type 'textarea', stores the content.
+    """
+    take = models.ForeignKey(
+        'Take', 
+        on_delete=models.CASCADE, 
+        related_name='take_answers'
+    )
+    answer = models.ForeignKey(
+        'Answer', 
+        on_delete=models.CASCADE, 
+        related_name='take_answers'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    content = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"TakeAnswer (Take ID: {self.take.id}, Answer ID: {self.answer.id})"
+    
+      
     
