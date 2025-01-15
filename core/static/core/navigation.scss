@@ -1,139 +1,3 @@
-// // Variables
-// $primary-color: #333;
-// $secondary-color: #555;
-// $text-color: #fff;
-// $hover-color: #f0f0f0;
-// $breakpoint: 768px;
-
-// // Mixins
-// @mixin flex-center {
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-// }
-
-
-// @mixin transition($property, $duration: 0.3s, $ease: ease-in-out) {
-//     transition: $property $duration $ease;
-// }
-
-// .navbar {
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-//     background-color: $primary-color;
-//     padding: 1rem 2rem;
-//     color: $text-color;
-//     // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-//     .logo {
-//         a {
-//             text-decoration: none;
-//             color: $text-color;
-//             font-size: 1.5rem;
-//             font-weight: bold;
-
-//             img {
-//                 max-width: 40px;
-//                 height: auto;
-//             }
-//         }
-//     }
-
-//     .nav-links {
-//         display: flex;
-//         list-style: none;
-//         margin: 0;
-//         padding: 0;
-
-//         li {
-//             margin: 0 1rem;
-
-//             a {
-//                 color: $text-color;
-//                 text-decoration: none;
-//                 font-weight: 500;
-//                 padding: 0.5rem 1rem;
-//                 border-radius: 4px;
-
-//                 @include transition(all);
-
-//                 &:hover {
-//                     background-color: $hover-color;
-//                     color: $primary-color;
-//                 }
-//             }
-//         }
-//     }
-
-//     .hamburger {
-//         display: none;
-//         cursor: pointer;
-
-//         div {
-//             width: 25px;
-//             height: 3px;
-//             background-color: $text-color;
-//             margin: 5px 0;
-//             @include transition(all);
-//         }
-
-//         &:hover div {
-//             background-color: $hover-color;
-//         }
-//     }
-
-
-//     .auth-links {
-//         @include flex-center;
-
-//         a {
-//             color: $text-color;
-//             text-decoration: none;
-//             font-weight: 500;
-//             margin-left: 1rem;
-
-//             @include transition(color);
-
-//             &:hover {
-//                 color: $hover-color;
-//             }
-//         }
-//     }
-// }
-
-
-// // Responsive Styles
-// @media (max-width: $breakpoint) {
-//     .nav-links {
-//         // display: none;
-//         flex-direction: column;
-//         position: absolute;
-//         top: 100%;
-//         left: 0;
-//         width: 10px;
-//         background-color: $primary-color;
-
-//         li {
-//             text-align: center;
-//             margin: 0;
-
-//             a {
-//                 display: block;
-//                 padding: 1rem;
-//             }
-//         }
-//     }
-
-//     .nav-links.open {
-//         display: flex;
-//     }
-
-//     .hamburger {
-//         display: block;
-//     }
-// }
-
 // Variables
 $primary-color: #333;
 $text-color: #fff;
@@ -165,8 +29,6 @@ $breakpoint: 768px;
         a {
             text-decoration: none;
             color: $text-color;
-            font-size: 1.5rem;
-            font-weight: bold;
         }
 
         img {
@@ -175,40 +37,75 @@ $breakpoint: 768px;
     }
 }
 
-
-.nav-links {
+.list-container {
+    width: 100%;
     display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    
+     .left-links,
+     .right-links {
+        ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
 
-    li { 
-        margin: 0 1rem;
+            li {
+                margin: 0 1rem;
 
-        a {
-            text-decoration: none;
-            color: $text-color;
-            padding: 0.5rem 1rem;
-            @include transition(all);
+                a {
+                    text-decoration: none;
+                    color: $text-color;
+                    padding: 0.5rem 1rem;
+                    @include transition(all);
 
-            &:hover {
-                background-color: $hover-color;
-                color: $primary-color;
+                    &:hover {
+                        background-color: $hover-color;
+                        color: $primary-color;
+                    }
+                }
             }
         }
-    }
+     }
 
-    &.open {
-        display: flex;
-    }
+    // .nav-links {
+    //     display: flex;
+    //     list-style: none;
+    //     margin: 0;
+    //     padding: 0;
+    
+    //     li { 
+    //         margin: 0 1rem;
+    
+    //         a {
+    //             text-decoration: none;
+    //             color: $text-color;
+    //             padding: 0.5rem 1rem;
+    //             @include transition(all);
+    
+    //             &:hover {
+    //                 background-color: $hover-color;
+    //                 color: $primary-color;
+    //             }
+    //         }
+    //     }
+    
+    //     &.open {
+    //         display: flex;
+    //     }
+    // }
 }
+
 
 // Hamburger Menu
 .hamburger {
-    display: none;
+    display: none; // Hide on large screens
+    position: relative;
+    margin-left: auto;
     cursor: pointer;
     z-index: 1000;
-    position: relative;
 
     .bar {
         width: 25px;
@@ -243,34 +140,46 @@ $breakpoint: 768px;
 
 // Responsive Styles (for mobile view)
 @media (max-width: $breakpoint) {
-    .nav-links {
+    .list-container {
         display: none;
-        flex-direction: column;
         position: absolute;
         top: 100%;
         left: 0;
         width: 100%;
         background-color: $primary-color;
+        flex-direction: column;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-        li {
-            text-align: center;
-            margin: 0;
+        &.open {
+            display: flex;
+        }
 
-            a {
-                display: block;
-                padding: 1rem;
-                border-top: 1px solid #444;
-            }
+        .right-links {
+            display: none;
+        }
 
-            &:first-child a {
-                border-top: none;
+        .left-links {
+            width: 100%;
+
+            ul {
+                flex-direction: column;
+                text-align: center;
+
+                li {
+                    margin: 0;
+
+                    a {
+                        display: block;
+                        padding: 1rem;
+                        border-top: 1px solid #444;
+                    }
+
+                    &:first-child a {
+                        border-top: none;
+                    }
+                }
             }
         }
-    }
-
-    .nav-links.open {
-        display: flex;
     }
 
     .hamburger {
