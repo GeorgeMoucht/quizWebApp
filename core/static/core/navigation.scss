@@ -44,8 +44,67 @@ $breakpoint: 768px;
     align-items: center;
     z-index: 1000;
     
-     .left-links,
-     .right-links {
+    .right-links {
+        .profile-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            .profile-pic {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 2px solid $hover-color;
+                object-fit: cover;
+                @include transition(all);
+
+                &:hover {
+                    border-color: lighten($hover-color, 10%);
+                }
+            }
+            
+            .dropdown-menu {
+                display: none;
+                position: absolute;
+                top: calc(100% + 10px);
+                right: 0;
+                background-color: $primary-color;
+                border: 1px solid darken($primary-color, 10%);
+                border-radius: 5px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                min-width: 150px;
+                z-index: 1000;
+
+                li {
+                    a {
+                        display: block;
+                        color: $text-color;
+                        text-decoration: none;
+                        padding: 0.8rem 1.2rem;
+                        @include transition(all);
+
+                        &:hover {
+                            background-color: $hover-color;
+                            color: $primary-color;
+                        }
+                    }
+                }
+            }
+
+            &.open {
+                .dropdown-menu {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .left-links,
+    .right-links {
         ul {
             display: flex;
             list-style: none;
@@ -68,34 +127,7 @@ $breakpoint: 768px;
                 }
             }
         }
-     }
-
-    // .nav-links {
-    //     display: flex;
-    //     list-style: none;
-    //     margin: 0;
-    //     padding: 0;
-    
-    //     li { 
-    //         margin: 0 1rem;
-    
-    //         a {
-    //             text-decoration: none;
-    //             color: $text-color;
-    //             padding: 0.5rem 1rem;
-    //             @include transition(all);
-    
-    //             &:hover {
-    //                 background-color: $hover-color;
-    //                 color: $primary-color;
-    //             }
-    //         }
-    //     }
-    
-    //     &.open {
-    //         display: flex;
-    //     }
-    // }
+    }
 }
 
 
@@ -154,10 +186,6 @@ $breakpoint: 768px;
             display: flex;
         }
 
-        .right-links {
-            display: none;
-        }
-
         .left-links {
             width: 100%;
 
@@ -180,9 +208,45 @@ $breakpoint: 768px;
                 }
             }
         }
+
+        .right-links {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            
+            .profile-menu {
+                display: flex;
+                align-items: center;
+                
+                .profile-pic {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    border: 2px solid $hover-color;
+                    object-fit: cover;
+                    margin-left: 10px;
+                    @include transition(all);
+
+                    &:hover {
+                        border-color: lighten($hover-color, 10%);
+                    }
+                }
+
+                .dropdown-menu {
+                    top: calc(100% + 5px);
+                    right: 10px;
+                    min-width: 100px;
+                    z-index: 1001;
+                }
+            }
+        }
     }
 
     .hamburger {
         display: block;
+        position: relative;
+        z-index: 1000;
     }
 }

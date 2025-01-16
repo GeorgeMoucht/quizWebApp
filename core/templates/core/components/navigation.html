@@ -17,10 +17,21 @@
             </ul>
         </div>
         <div class="right-links">
+            {% if user.is_authenticated %}
+            <!-- Loggred-in state -->
+            <div class="profile-menu">
+                <img src="{{ user.profile.picture.url}}" alt="{{ user.username }}" class="profile-pic" onclick="toggleDropdown()">
+                <ul class="dropdown-menu">
+                    <li><a href="/profiles">Profile</a></li>
+                    <li><a href="/authentication/logout">Logout</a></li>
+                </ul>
+            </div>
+            {% else %}
             <ul class="nav-links">
                 <li><a href="/authenticate/login">Login</a></li>
                 <li><a href="/authentication/register">Register</a></li>
             </ul>
+            {% endif %}
         </div>
     </div>
 </nav>
