@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
                 ('description', models.TextField(blank=True)),
-                ('attachment', models.FileField(blank=True, null=True, upload_to='lessons/attachments')),
+                ('attachment', models.FileField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
@@ -154,6 +154,49 @@ class Migration(migrations.Migration):
                     related_name='answers',
                     to='courses.Question',
                     verbose_name='Question'
+                )),
+            ],
+        ),
+
+        # Create the Take table
+        migrations.CreateModel(
+            name='Take',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('score', models.DecimalField(max_digits=5, decimal_places=2, default=0.00, verbose_name='Score')),
+                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Started At')),
+                ('finished_at', models.DateTimeField(blank=True, null=True, verbose_name='Finished At')),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='takes',
+                    to=settings.AUTH_USER_MODEL,
+                    verbose_name='User'
+                )),
+                ('quiz', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='takes',
+                    to='courses.quiz',
+                    verbose_name='Quiz'
+                )),
+            ],
+        ),
+
+        # Create the Take_Answer table
+        migrations.CreateModel(
+            name='TakeAnswer',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('content', models.TextField(blank=True, null=True)),
+                ('take', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='take_answers',
+                    to='courses.take'
+                )),
+                ('answer', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='take_answers',
+                    to='courses.answer'
                 )),
             ],
         ),
