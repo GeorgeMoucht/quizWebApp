@@ -62,14 +62,16 @@ def enroll_course_view(request, course_id):
 @login_required
 def enrolled_courses_view(request):
     """
-    View για να εμφανίζει τα μαθήματα και τα lessons στα οποία είναι εγγεγραμμένος ο χρήστης.
+    View για να εμφανίζει τα μαθήματα στα οποία είναι εγγεγραμμένος ο χρήστης.
     """
     enrolled_courses = request.user.courses_enrolled.all()  # Παίρνουμε τα μαθήματα μέσω του related_name
-    courses_with_lessons = [
-        {
-            'course': course,
-            'lessons': course.lessons.all()  # Παίρνουμε τα lessons μέσω του related_name
-        }
-        for course in enrolled_courses
-    ]
-    return render(request, 'courses/enrolled_courses.html', {'courses_with_lessons': courses_with_lessons})
+    return render(request, 'courses/enrolled_courses.html', {'enrolled_courses': enrolled_courses})
+
+@login_required
+def course_lessons_view(request, course_id):
+    """
+    View για να εμφανίζει τα lessons ενός μαθήματος στο οποίο είναι εγγεγραμμένος ο χρήστης.
+    """
+    course = get_object_or_404(request.user.courses_enrolled, id=course_id)  # Ελέγχουμε ότι ο χρήστης είναι εγγεγραμμένος
+    lessons = course.lessons.all()  # Παίρνουμε τα lessons του μαθήματος
+    return render(request, 'courses/course_lessons.html', {'course': course, 'lessons': lessons})

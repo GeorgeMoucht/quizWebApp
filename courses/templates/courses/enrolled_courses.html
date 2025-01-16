@@ -3,24 +3,11 @@
 {% block content %}
 <h1>Enrolled Courses</h1>
 <ul>
-    {% for item in courses_with_lessons %}
+    {% for course in enrolled_courses %}
     <li>
-        <h2>{{ item.course.title }}</h2>
-        <p>{{ item.course.description }}</p>
-        <ul>
-            {% for lesson in item.lessons %}
-            <li>
-                <h3>{{ lesson.title }}</h3>
-                <p>{{ lesson.description }}</p>
-                {% if lesson.attachment %}
-                <p>
-                    Attachment: 
-                    <a href="{{ lesson.attachment.url }}" download>{{ lesson.attachment.name }}</a>
-                </p>
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
+        <h2>{{ course.title }}</h2>
+        <p>{{ course.description }}</p>
+        <a href="{% url 'course_lessons' course.id %}">View Lessons</a>
     </li>
     {% endfor %}
 </ul>
