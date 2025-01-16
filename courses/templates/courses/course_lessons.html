@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h1>Lessons for {{ course.title }}</h1>
+<p>{{ course.description }}</p>
+<ul>
+    {% for lesson in lessons %}
+    <li>
+        <h3>{{ lesson.title }}</h3>
+        <p>{{ lesson.description }}</p>
+        {% if lesson.attachment %}
+        <p>
+            Attachment: 
+            <a href="{{ lesson.attachment.url }}" download>{{ lesson.attachment.name }}</a>
+        </p>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'enrolled_courses' %}">Back to Enrolled Courses</a>
+{% endblock %}
