@@ -11,3 +11,8 @@ function toggleMenu() {
     listContainer.classList.toggle('open');
     hambuger.classList.toggle('open');
 }
+
+function toggleDropdown() {
+    const profileMenu = document.querySelector('.profile-menu');
+    profileMenu.classList.toggle('open');
+}

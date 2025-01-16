@@ -26,6 +26,45 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 1000; }
+  .list-container .right-links .profile-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer; }
+    .list-container .right-links .profile-menu .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #f0f0f0;
+      object-fit: cover;
+      transition: all 0.3s ease-in-out; }
+      .list-container .right-links .profile-menu .profile-pic:hover {
+        border-color: white; }
+    .list-container .right-links .profile-menu .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background-color: #333;
+      border: 1px solid #1a1a1a;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      min-width: 150px;
+      z-index: 1000; }
+      .list-container .right-links .profile-menu .dropdown-menu li a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        padding: 0.8rem 1.2rem;
+        transition: all 0.3s ease-in-out; }
+        .list-container .right-links .profile-menu .dropdown-menu li a:hover {
+          background-color: #f0f0f0;
+          color: #333; }
+    .list-container .right-links .profile-menu.open .dropdown-menu {
+      display: block; }
   .list-container .left-links ul,
   .list-container .right-links ul {
     display: flex;
@@ -83,8 +122,6 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
     .list-container.open {
       display: flex; }
-    .list-container .right-links {
-      display: none; }
     .list-container .left-links {
       width: 100%; }
       .list-container .left-links ul {
@@ -98,8 +135,34 @@ body {
             border-top: 1px solid #444; }
           .list-container .left-links ul li:first-child a {
             border-top: none; }
+    .list-container .right-links {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      display: flex;
+      align-items: center; }
+      .list-container .right-links .profile-menu {
+        display: flex;
+        align-items: center; }
+        .list-container .right-links .profile-menu .profile-pic {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 2px solid #f0f0f0;
+          object-fit: cover;
+          margin-left: 10px;
+          transition: all 0.3s ease-in-out; }
+          .list-container .right-links .profile-menu .profile-pic:hover {
+            border-color: white; }
+        .list-container .right-links .profile-menu .dropdown-menu {
+          top: calc(100% + 5px);
+          right: 10px;
+          min-width: 100px;
+          z-index: 1001; }
   .hamburger {
-    display: block; } }
+    display: block;
+    position: relative;
+    z-index: 1000; } }
 
 .footer {
   background-color: #333;
