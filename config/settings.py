@@ -127,14 +127,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Static files (CSS, JavaScript, images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",  # Global static directory
+    BASE_DIR / 'static',
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# SASS processor settings
-SASS_PROCESSOR_ROOT = BASE_DIR / "static"  # Root directory for SCSS files
+# Enable Sass processor
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_ROOT = BASE_DIR / 'static'  # Output compiled CSS in the same directory as SCSS
+
+# Optional: Set output style to 'expanded' (for easier reading)
+SASS_PROCESSOR_OUTPUT_STYLE = 'expanded'
+
+# Ensure Sass files are found in the correct directories
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Static files finders
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

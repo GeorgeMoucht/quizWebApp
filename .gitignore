@@ -18,3 +18,6 @@ media/
 .envgit
 
 .idea/
+
+# Ignore all DS_Store files create by macOS
+.DS_Store
