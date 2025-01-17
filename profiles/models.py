@@ -19,7 +19,7 @@ class Profile(models.Model):
     """
     user = models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(default='profile_pics/default_pic.jpg', upload_to='profile_pics',null=True)
+    avatar = models.ImageField(default='profiles_pics/default_pic.jpg', upload_to='profile_pics',null=True)
     
    
     def __str__(self):
@@ -35,3 +35,11 @@ class Profile(models.Model):
         """
 
         return f"Profile of {self.user.username}"
+    
+    def get_avatar_url(self):
+        """
+        Returns the URL of the avatar.
+        """
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return f"{settings.MEDIA_URL}profiles_pics/default_pic.jpg"

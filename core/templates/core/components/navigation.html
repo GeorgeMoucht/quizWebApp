@@ -20,7 +20,7 @@
             {% if user.is_authenticated %}
             <!-- Loggred-in state -->
             <div class="profile-menu">
-                <img src="{{ user.profile.picture.url}}" alt="{{ user.username }}" class="profile-pic" onclick="toggleDropdown()">
+                <img src="{{ user_profile.get_avatar_url }}" alt="{{ user.username }}" class="profile-pic" onclick="toggleDropdown()">
                 <ul class="dropdown-menu">
                     <li><a href="/profiles">Profile</a></li>
                     <li><a href="/authentication/logout">Logout</a></li>
