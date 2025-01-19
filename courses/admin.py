@@ -6,7 +6,7 @@ from django.utils.html import format_html
 class EnrollmentInline(admin.TabularInline):
     model = Enrollment
     extra = 0
-    readonly_fields = ('student', 'enrolled_at')
+    readonly_fields = ('student_id', 'course_id', 'enrolled_at')
     can_delete = True
 
     def get_queryset(self, request):
@@ -16,7 +16,7 @@ class EnrollmentInline(admin.TabularInline):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(course__teacher=request.user)
+        return qs.filter(course_id__teacher_id=request.user)
 
     def has_add_permission(self, request, obj=None):
         """Prevent adding enrollments directly from this inline"""
@@ -48,18 +48,23 @@ class CourseAdmin(admin.ModelAdmin):
     """
     Admin interface for managing the Course model.
     """
-    list_display = ('title', 'teacher', 'created_at')
+    list_display = ('title', 'get_teacher', 'created_at')
     # inlines = [EnrollmentInline, LessonInline]
     inlines = [EnrollmentInline, LessonInline]
 
+    def get_teacher(self, obj):
+        """
+        Display the teacher's username.
+        """
+        return obj.teacher_id.username
+    get_teacher.short_description = 'Teacher'
+
     def save_model(self, request, obj, form, change):
         """
-        Override the save_model method to automatically set the teacher field to the current user.
+        Set the teacher field to the current user for new courses.
         """
-        # If this is a new course and the teacher is not set, set the teacher to the current logged-in user.
-        if not obj.pk:  # This means the course is not yet saved to the DB
-            if not request.user.is_superuser:
-                obj.teacher = request.user  # Assign the logged-in user as the teacher
+        if not obj.pk and not request.user.is_superuser:
+            obj.teacher_id = request.user
         super().save_model(request, obj, form, change)
 
     def get_form(self, request, obj=None, **kwargs):
@@ -67,11 +72,10 @@ class CourseAdmin(admin.ModelAdmin):
         Override the form to make the teacher field read-only for non-superusers.
         """
         form = super().get_form(request, obj, **kwargs)
-
         # For non-superusers, auto-fill and disable the taecher field
         if not request.user.is_superuser:
-            form.base_fields['teacher'].initial = request.user
-            form.base_fields['teacher'].disabled = True
+            form.base_fields['teacher_id'].initial = request.user
+            form.base_fields['teacher_id'].disabled = True
         return form
     
     def get_queryset(self, request):
@@ -81,38 +85,38 @@ class CourseAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(teacher=request.user)
-
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        """
-        Override the change view to include a custom section
-        for listing lessons.
-        """
-        course = self.get_object(request, object_id)
-        if course:
-            lessons = course.lessons.all()
-            extra_context = extra_context or {}  # Ensure extra_context is initialized
-            extra_context['lessons'] = lessons
-
-            # Add a URL to add a new lesson
-            add_lesson_url = reverse('admin:courses_lesson_add') + f"?course={course.id}"
-            extra_context['add_lesson_url'] = add_lesson_url
-
-        return super().change_view(request, object_id, form_url, extra_context)
+        return qs.filter(teacher_id=request.user)
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    pass
+    """
+    Admin interface for managing the Lesson model.
+    """
+    list_display = ('title', 'course_id', 'created_at')
 
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):
     """
     Admin interface for managing the Enrollment model.
     """
-    list_display = ('student', 'course', 'enrolled_at')  # Fields to display in list view
-    list_filter = ('course',)  # Use a tuple for filtering
-    search_fields = ('student__username', 'course__title')  # Enable searching
+    list_display = ('get_student', 'get_course', 'enrolled_at')  # Fields to display in list view
+    list_filter = ('course_id',)  # Use a tuple for filtering
+    search_fields = ('student_id__username', 'course_id__title')  # Updated field names
     ordering = ('-enrolled_at',)  # Use a tuple for ordering (descending by enrollment date)
+
+    def get_student(self, obj):
+        """
+        Display the enrolled student's username.
+        """
+        return obj.student_id.username
+    get_student.short_description = 'Student'
+
+    def get_course(self, obj):
+        """
+        Display the course title.
+        """
+        return obj.course_id.title
+    get_course.short_description = 'Course'
 
     def get_queryset(self, request):
         """
@@ -121,7 +125,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(course__teacher=request.user)
+        return qs.filter(course_id__teacher_id=request.user)
     
     def has_view_permission(self, request, obj=None):
         """
@@ -130,7 +134,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         """
         if request.user.is_superuser:
             return True
-        if obj and obj.course.teacher == request.user:
+        if obj and obj.course_id.teacher_id == request.user:
             return True
         return False
     
@@ -141,7 +145,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return True
         # Ensure the teacher has permission to delete enrollments in their course
-        return obj and obj.course.teacher == request.user
+        return obj and obj.course_id.teacher_id == request.user
 
     def has_add_permission(self, request):
         """Disable adding enrollments directly from the admin."""

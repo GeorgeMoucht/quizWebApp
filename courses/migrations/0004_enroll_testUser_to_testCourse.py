@@ -22,14 +22,14 @@ def enroll_test_user_to_test_course(apps, schema_editor):
     
     # Enroll the testStudent in the testCourse
     enrollment, created = Enrollment.objects.get_or_create(
-        student=test_student,
-        course=test_course
+        student_id=test_student,
+        course_id=test_course
     )
 
     if created:
-        print(f"Enrolled {test_student.username} into {test_course.title}.")
+        print(f"Successfully enrolled {test_student.username} into {test_course.title}.")
     else:
-        print(f"{test_student.username} is already enrolled in {test_course.title}.")
+        print(f"{test_student.username} is already enrolled in {test_course.title}. Enrollment skipped.")
     
 
 class Migration(migrations.Migration):
