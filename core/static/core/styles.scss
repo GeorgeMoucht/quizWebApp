@@ -8,5 +8,8 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+@import './variables';
+@import './mixins';
 @import './navigation';
 @import './footer';
+

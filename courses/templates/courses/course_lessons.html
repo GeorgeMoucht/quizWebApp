@@ -1,21 +1,30 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block content %}
 <h1>Lessons for {{ course.title }}</h1>
 <p>{{ course.description }}</p>
-<ul>
-    {% for lesson in lessons %}
-    <li>
-        <h3>{{ lesson.title }}</h3>
-        <p>{{ lesson.description }}</p>
-        {% if lesson.attachment %}
-        <p>
-            Attachment: 
-            <a href="{{ lesson.attachment.url }}" download>{{ lesson.attachment.name }}</a>
-        </p>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+</br>
+<div class="accordion">
+  {% for lesson in lessons %}
+  <div class="accordion-item">
+      <div class="accordion-header">
+          {{ lesson.title }}
+          <span class="icon">+</span>
+      </div>
+      <div class="accordion-content">
+          <p>{{ lesson.description }}</p>
+          {% if lesson.attachment %}
+          <a href="{{ lesson.attachment.url }}" download>Download Attachment</a>
+          {% endif %}
+      </div>
+  </div>
+  {% endfor %}
+</div>
+</br> 
 <a href="{% url 'enrolled_courses' %}">Back to Enrolled Courses</a>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'courses/accordion.js' %}"></script>
 {% endblock %}
