@@ -31,7 +31,7 @@ class Course(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
 
-    teacher_id = models.ForeignKey(
+    teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='courses',
@@ -75,8 +75,8 @@ class Course(models.Model):
             ValidationError: If the teacher is not part of the 
             'Teacher' group.
         """
-        if not self.teacher_id.groups.filter(name="Teacher").exists():
-            raise ValidationError(f"The user {self.teacher_id} is not in the 'Teacher' group.")
+        if not self.teacher.groups.filter(name="Teacher").exists():
+            raise ValidationError(f"The user {self.teacher} is not in the 'Teacher' group.")
 
     def save(self, *args, **kwargs):
         """
@@ -92,10 +92,8 @@ class Course(models.Model):
         # Hash the password if provided
         if self.password:
             self.password = make_password(self.password)
-
         # Run custom validation
         self.clean()
-
         # Call the superclass's save method to add course in db.
         super().save(*args, **kwargs)
 
@@ -114,7 +112,7 @@ class Lesson(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    course_id = models.ForeignKey(
+    course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
         related_name='lessons'
@@ -131,19 +129,19 @@ class Enrollment(models.Model):
     and stores the enrollment date.
 
     Attributes:
-        student_id (ForeignKey): The student (user) enrolled in the 
+        student (ForeignKey): The student (user) enrolled in the 
             course.
-        course_id (ForeignKey): The course in which the student 
+        course (ForeignKey): The course in which the student 
             is enrolled.
         enrolled_at (DateTimeField): The date and time when the student
             enrolled.
     """
-    student_id = models.ForeignKey(
+    student = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="enrollments"
     )
-    course_id = models.ForeignKey(
+    course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
         related_name="enrollments"
@@ -154,13 +152,13 @@ class Enrollment(models.Model):
         # unique_together = ('student', 'course')
         constraints = [
             models.UniqueConstraint(
-                fields=['student_id', 'course_id'],
+                fields=['student', 'course'],
                 name='unique_enrollment'       
             )
         ]
 
     def __str__(self):
-        return f"{self.student_id.username} enrolled in {self.course_id.title}"
+        return f"{self.student.username} enrolled in {self.course.title}"
     
     
 class Quiz(models.Model):
@@ -181,7 +179,7 @@ class Quiz(models.Model):
         updated_at (datetime): The date and time when the quiz was
             last updated.
         content (str): Additional content/instructions for the quiz.
-        course_id (ForeignKey): The course associated with the quiz.
+        course: (ForeignKey): The course associated with the quiz.
     """
     title = models.CharField(max_length=255, verbose_name="Quiz Title")
     summary = models.TextField(
@@ -217,7 +215,7 @@ class Quiz(models.Model):
         null=True,
         verbose_name="Additional Content"
     )
-    course_id = models.ForeignKey(
+    course = models.ForeignKey(
         Course,
         on_delete=models.CASCADE,
         related_name="quizzes",
@@ -240,7 +238,7 @@ class Question(models.Model):
     Represents a question belonging to a quiz.
 
     Attributes:
-        quiz_id (ForeignKey): The quiz the question belongs to.
+        quiz (ForeignKey): The quiz the question belongs to.
         type (int): The type of question (Multiple Choice, True/False,
             Short Answer).
         active (bool): Whether the question is active.
@@ -271,7 +269,7 @@ class Question(models.Model):
         (DIFFICULT, "Difficult")
     ]
 
-    quiz_id = models.ForeignKey(
+    quiz = models.ForeignKey(
         Quiz,
         on_delete=models.CASCADE,
         related_name="questions",
@@ -312,13 +310,13 @@ class Answer(models.Model):
     Represents an answer belonging to a question.
 
     Attributes:
-        question_id (ForeignKey): The question this answer belongs to.
+        question (ForeignKey): The question this answer belongs to.
         content (str): The answer text.
         is_correct (bool): Whether this answer is the correct one.
         created_at (datetime): When the answer was created.
         updated_at (datetime): When the answer was last updated.
     """
-    question_id = models.ForeignKey(
+    question = models.ForeignKey(
         Question,
         on_delete=models.CASCADE,
         related_name="answers",
@@ -342,10 +340,10 @@ class Answer(models.Model):
         """
         Custom validation to ensure the correct number of valid answers based on the question type.
         """
-        question_type = self.question_id.type
+        question_type = self.question.type
 
-        if question_type == self.question_id.TRUE_FALSE:
-            if self.is_correct and self.question_id.answers.filter(is_correct=True).exclude(id=self.id).exists():
+        if question_type == self.question.TRUE_FALSE:
+            if self.is_correct and self.question.answers.filter(is_correct=True).exclude(id=self.id).exists():
                 raise ValidationError("A True/False question can only have one correct answer.")
 
 
@@ -358,20 +356,20 @@ class Take(models.Model):
     Represents an attempt by user to complete a quiz.
 
     Attributes:
-        user_id (ForeignKey): the user attempting the quiz.
-        quiz_id (Foreignkey): The quiz being attempted.
+        user (ForeignKey): the user attempting the quiz.
+        quiz (Foreignkey): The quiz being attempted.
         score (float): The score achieved by the user.
         created_at (datetime): The timestamp when the attempt started.
         finished_at (datetime): The timestamp when the attempt was
             completed.
     """
-    user_id = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='takes',
         verbose_name="User"
     )
-    quiz_id = models.ForeignKey(
+    quiz = models.ForeignKey(
         Quiz,
         on_delete=models.CASCADE,
         related_name='takes',
@@ -396,7 +394,7 @@ class Take(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user_id', 'quiz_id'],
+                fields=['user', 'quiz'],
                 name='unique_user_quiz_take'
             )
         ]
@@ -426,7 +424,7 @@ class Take(models.Model):
         String representation of the Take.
         """
         status = "Complete" if self.finished_at else "In Progress"
-        return f"User {self.user_id.username} - Quiz {self.quiz_id.title} - Score {self.score} - Status: {status}"
+        return f"User {self.user.username} - Quiz {self.quiz.title} - Score {self.score} - Status: {status}"
 
 
 
@@ -435,21 +433,21 @@ class TakeAnswer(models.Model):
     Represents an answer submitted during a quiz attempt.
 
     Attributes:
-        take_id (ForeignKey): Reference to the Take instance 
+        take (ForeignKey): Reference to the Take instance 
             (quiz attempt).
-        answer_id (ForeignKey): Reference to the Answer instance.
+        answer (ForeignKey): Reference to the Answer instance.
         created_at (DateTimeField): Timestamp of when the answer was
             submitted.
         content (TextField): If the answer is of type 'textarea',
             stores the content.
     """
-    take_id = models.ForeignKey(
+    take = models.ForeignKey(
         'Take', 
         on_delete=models.CASCADE, 
         related_name='take_answers',
         verbose_name="Quiz Attempt"
     )
-    answer_id = models.ForeignKey(
+    answer = models.ForeignKey(
         'Answer',
         on_delete=models.CASCADE,
         related_name='take_answers',
@@ -469,7 +467,7 @@ class TakeAnswer(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['take_id', 'answer_id'],
+                fields=['take', 'answer'],
                 name='unique_take_answer'
             )
         ]
@@ -480,16 +478,16 @@ class TakeAnswer(models.Model):
         open-ended questions.
         """
         #Check if content is required
-        if self.answer_id.question_id.type == self.answer_id.question_id.SHORT_ANSWER and not self.content:
+        if self.answer.question.type == self.answer.question.SHORT_ANSWER and not self.content:
             raise ValidationError("Content is required for short answer questions.")
 
     def __str__(self):
         """
         String representation of the TakeAnswer.
         """
-        return (f"TakeAnswer (Take ID: {self.take_id.id}, "
-                f"Answer ID: {self.answer_id.id}, "
-                f"Question: {self.answer_id.question_id.content[:50]})")
+        return (f"TakeAnswer (Take ID: {self.take.id}, "
+                f"Answer ID: {self.answer.id}, "
+                f"Question: {self.answer.question.content[:50]})")
     
       
     

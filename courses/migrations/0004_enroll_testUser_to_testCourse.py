@@ -22,8 +22,8 @@ def enroll_test_user_to_test_course(apps, schema_editor):
     
     # Enroll the testStudent in the testCourse
     enrollment, created = Enrollment.objects.get_or_create(
-        student_id=test_student,
-        course_id=test_course
+        student=test_student,
+        course=test_course
     )
 
     if created:

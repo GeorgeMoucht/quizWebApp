@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=200)),
                 ('description', models.TextField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('teacher_id', models.ForeignKey(
+                ('teacher', models.ForeignKey(
                     limit_choices_to={'groups__name': 'Teacher'},
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='courses',
@@ -53,22 +53,21 @@ class Migration(migrations.Migration):
                 ('enrolled_at', models.DateTimeField(
                     auto_now_add=True
                 )),
-                ('course_id', models.ForeignKey(
+                ('course', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='enrollments',
                     to='courses.course'
                 )),
-                ('student_id', models.ForeignKey(
+                ('student', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='enrollments',
                     to=settings.AUTH_USER_MODEL
                 )),
             ],
             options={
-                # 'unique_together': {('student_id', 'course_id')},
                 'constraints': [
                     models.UniqueConstraint(
-                        fields=['student_id', 'course_id'],
+                        fields=['student', 'course'],
                         name='unique_enrollment'
                     )
                 ]
@@ -93,7 +92,7 @@ class Migration(migrations.Migration):
                 )),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('course_id', models.ForeignKey(
+                ('course', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='lessons',
                     to='courses.Course'
@@ -148,7 +147,7 @@ class Migration(migrations.Migration):
                     null=True,
                     verbose_name='Additional Content'
                 )),
-                ('course_id', models.ForeignKey(
+                ('course', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='quizzes',
                     to='courses.Course',
@@ -206,7 +205,7 @@ class Migration(migrations.Migration):
                     auto_now=True,
                     verbose_name='Updated At'
                 )),
-                ('quiz_id', models.ForeignKey(
+                ('quiz', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='questions',
                     to='courses.quiz',
@@ -240,7 +239,7 @@ class Migration(migrations.Migration):
                     auto_now=True,
                     verbose_name='Updated At'
                 )),
-                ('question_id', models.ForeignKey(
+                ('question', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='answers',
                     to='courses.Question',
@@ -274,13 +273,13 @@ class Migration(migrations.Migration):
                     null=True,
                     verbose_name='Finished At'
                 )),
-                ('user_id', models.ForeignKey(
+                ('user', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='takes',
                     to=settings.AUTH_USER_MODEL,
                     verbose_name='User'
                 )),
-                ('quiz_id', models.ForeignKey(
+                ('quiz', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='takes',
                     to='courses.quiz',
@@ -290,7 +289,7 @@ class Migration(migrations.Migration):
             options={
                 'constraints': [
                     models.UniqueConstraint(
-                        fields=['user_id', 'quiz_id'],
+                        fields=['user', 'quiz'],
                         name='unique_user_quiz_take'
                     )
                 ]
@@ -316,13 +315,13 @@ class Migration(migrations.Migration):
                     null=True,
                     verbose_name="Answer Content"
                 )),
-                ('take_id', models.ForeignKey(
+                ('take', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='take_answers',
                     to='courses.take',
                     verbose_name="Quiz Attempt"
                 )),
-                ('answer_id', models.ForeignKey(
+                ('answer', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='take_answers',
                     to='courses.answer',
@@ -332,7 +331,7 @@ class Migration(migrations.Migration):
             options={
                 'constraints': [
                     models.UniqueConstraint(
-                        fields=['take_id', 'answer_id'],
+                        fields=['take', 'answer'],
                         name='unique_take_answer'
                     )
                 ]

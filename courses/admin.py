@@ -6,7 +6,7 @@ from django.utils.html import format_html
 class EnrollmentInline(admin.TabularInline):
     model = Enrollment
     extra = 0
-    readonly_fields = ('student_id', 'course_id', 'enrolled_at')
+    readonly_fields = ('student', 'course', 'enrolled_at')
     can_delete = True
 
     def get_queryset(self, request):
@@ -16,7 +16,7 @@ class EnrollmentInline(admin.TabularInline):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(course_id__teacher_id=request.user)
+        return qs.filter(course__teacher=request.user)
 
     def has_add_permission(self, request, obj=None):
         """Prevent adding enrollments directly from this inline"""
@@ -56,7 +56,7 @@ class CourseAdmin(admin.ModelAdmin):
         """
         Display the teacher's username.
         """
-        return obj.teacher_id.username
+        return obj.teacher.username
     get_teacher.short_description = 'Teacher'
 
     def save_model(self, request, obj, form, change):
@@ -64,7 +64,7 @@ class CourseAdmin(admin.ModelAdmin):
         Set the teacher field to the current user for new courses.
         """
         if not obj.pk and not request.user.is_superuser:
-            obj.teacher_id = request.user
+            obj.teacher = request.user
         super().save_model(request, obj, form, change)
 
     def get_form(self, request, obj=None, **kwargs):
@@ -74,8 +74,8 @@ class CourseAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         # For non-superusers, auto-fill and disable the taecher field
         if not request.user.is_superuser:
-            form.base_fields['teacher_id'].initial = request.user
-            form.base_fields['teacher_id'].disabled = True
+            form.base_fields['teacher'].initial = request.user
+            form.base_fields['teacher'].disabled = True
         return form
     
     def get_queryset(self, request):
@@ -85,14 +85,14 @@ class CourseAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(teacher_id=request.user)
+        return qs.filter(teacher=request.user)
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     """
     Admin interface for managing the Lesson model.
     """
-    list_display = ('title', 'course_id', 'created_at')
+    list_display = ('title', 'course', 'created_at')
 
 @admin.register(Enrollment)
 class EnrollmentAdmin(admin.ModelAdmin):
@@ -100,22 +100,22 @@ class EnrollmentAdmin(admin.ModelAdmin):
     Admin interface for managing the Enrollment model.
     """
     list_display = ('get_student', 'get_course', 'enrolled_at')  # Fields to display in list view
-    list_filter = ('course_id',)  # Use a tuple for filtering
-    search_fields = ('student_id__username', 'course_id__title')  # Updated field names
+    list_filter = ('course',)  # Use a tuple for filtering
+    search_fields = ('student__username', 'course__title')
     ordering = ('-enrolled_at',)  # Use a tuple for ordering (descending by enrollment date)
 
     def get_student(self, obj):
         """
         Display the enrolled student's username.
         """
-        return obj.student_id.username
+        return obj.student.username
     get_student.short_description = 'Student'
 
     def get_course(self, obj):
         """
         Display the course title.
         """
-        return obj.course_id.title
+        return obj.course.title
     get_course.short_description = 'Course'
 
     def get_queryset(self, request):
@@ -125,7 +125,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(course_id__teacher_id=request.user)
+        return qs.filter(course__teacher=request.user)
     
     def has_view_permission(self, request, obj=None):
         """
@@ -134,7 +134,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         """
         if request.user.is_superuser:
             return True
-        if obj and obj.course_id.teacher_id == request.user:
+        if obj and obj.course.teacher == request.user:
             return True
         return False
     
@@ -145,7 +145,7 @@ class EnrollmentAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return True
         # Ensure the teacher has permission to delete enrollments in their course
-        return obj and obj.course_id.teacher_id == request.user
+        return obj and obj.course.teacher == request.user
 
     def has_add_permission(self, request):
         """Disable adding enrollments directly from the admin."""

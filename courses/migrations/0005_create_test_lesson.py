@@ -20,7 +20,7 @@ def create_test_lesson(apps, schema_editor):
     test_lesson = Lesson.objects.create(
         title='Test Lesson',
         description='This is a test lesson for the Test Course.',
-        course_id=test_course,
+        course=test_course,
     )
 
     # Define the file path for testLesson.docx (updated path)
