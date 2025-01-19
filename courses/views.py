@@ -12,7 +12,7 @@ def course_list_view(request):
     the logged-in user is already enrolled.
     """
     user_enrollments = Enrollment.objects.filter(
-        student=request.user
+        student_id=request.user
     ).values_list('course_id', flat=True)
 
     courses = Course.objects.all()
@@ -51,8 +51,8 @@ def enroll_course_view(request, course_id):
 
             # Enroll the user in the course (explicitly setting enrolled_at)
             Enrollment.objects.create(
-                course=course,
-                student=request.user,
+                course_id=course,
+                student_id=request.user,
             )
             return HttpResponse("Enrollment successful")
         else:
