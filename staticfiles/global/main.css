@@ -27,7 +27,8 @@ body {
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  cursor: pointer; }
+  cursor: pointer;
+  z-index: 10; }
   .profile-menu .profile-pic {
     width: 40px;
     height: 40px;
@@ -50,7 +51,7 @@ body {
     padding: 0;
     margin: 0;
     min-width: 150px;
-    z-index: 1000; }
+    z-index: 1010; }
     .profile-menu .dropdown-menu li a {
       display: block;
       color: #fff;
@@ -187,54 +188,127 @@ body {
     color: #fff;
     margin-top: 1rem; }
 
-.accordion {
-  max-width: 800px;
-  margin: 0 auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden; }
-  .accordion .accordion-item {
-    border-bottom: 1px solid #ddd; }
-    .accordion .accordion-item:last-child {
-      border-bottom: none; }
-    .accordion .accordion-item .accordion-header {
+.parallax {
+  position: relative;
+  height: 40vh;
+  overflow: hidden;
+  z-index: 1; }
+  .parallax-header {
+    background-image: url("/media/courses-header-pic.avif");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100%;
+    width: 100%;
+    position: relative; }
+    .parallax-header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 15px;
-      background: #333;
-      color: #fff;
+      background-color: rgba(128, 128, 128, 0.4); }
+    .parallax-header .title {
+      position: absolute;
+      top: 30%;
+      left: 5%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 2.5rem;
+      font-weight: bold;
+      z-index: 2; }
+    .parallax-header .description {
+      position: absolute;
+      top: 40%;
+      left: 5%;
+      color: white;
+      z-index: 2;
+      line-height: 1.5; }
+  .parallax .content {
+    position: relative;
+    padding: 20px;
+    background: white;
+    text-align: center; }
+    .parallax .content h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      color: #333; }
+    .parallax .content p {
       font-size: 1.2rem;
-      text-align: left;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center; }
-      .accordion .accordion-item .accordion-header:hover {
-        background: #333; }
-      .accordion .accordion-item .accordion-header .icon {
-        font-size: 1.5rem;
-        font-weight: bold;
-        transition: transform 0.3s;
-        margin-left: auto;
-        color: #fff; }
-    .accordion .accordion-item .accordion-content {
-      display: none;
-      padding: 15px;
-      background: #f9f9f9;
-      border-top: 1px solid #ddd; }
-      .accordion .accordion-item .accordion-content p {
-        margin-bottom: 10px;
+      color: #666; }
+
+.lessons-container {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  padding: 20px; }
+  .lessons-container .navigation {
+    flex: 1;
+    max-width: 300px;
+    background: #f8f8f8;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px; }
+    .lessons-container .navigation ul {
+      list-style-type: none;
+      padding: 10px; }
+      .lessons-container .navigation ul li {
+        margin-bottom: 10px; }
+        .lessons-container .navigation ul li a {
+          text-decoration: none;
+          color: #007bff;
+          font-weight: bold; }
+          .lessons-container .navigation ul li a:hover {
+            text-decoration: underline; }
+  .lessons-container .lesson-content {
+    flex: 3;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px; }
+    .lessons-container .lesson-content h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #333; }
+    .lessons-container .lesson-content p {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.6; }
+
+.quizzes-container {
+  margin-top: 1rem;
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 1rem;
+  padding: 20px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px; }
+  .quizzes-container h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #333; }
+  .quizzes-container ul {
+    list-style-type: none;
+    padding-left: 10px; }
+    .quizzes-container ul li {
+      margin-bottom: 15px; }
+      .quizzes-container ul li h4 {
+        font-size: 1.4rem;
+        margin: 0;
+        color: #007bff; }
+      .quizzes-container ul li p {
+        margin: 5px 0;
+        color: #666;
         font-size: 1rem;
-        line-height: 1.5; }
-      .accordion .accordion-item .accordion-content a {
-        color: #007bff;
-        text-decoration: none; }
-        .accordion .accordion-item .accordion-content a:hover {
-          text-decoration: underline; }
-    .accordion .accordion-item.active .accordion-content {
-      display: block; }
-      .accordion .accordion-item.active .accordion-content .icon {
-        content: "-"; }
+        padding-left: 10px; }
+      .quizzes-container ul li a {
+        text-decoration: none;
+        color: #28a745;
+        font-weight: bold; }
+        .quizzes-container ul li a:hover {
+          text-decoration: underline;
+          color: #218838; }
 
 /*# sourceMappingURL=main.css.map */

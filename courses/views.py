@@ -72,6 +72,31 @@ def course_lessons_view(request, course_id):
     """
     View για να εμφανίζει τα lessons ενός μαθήματος στο οποίο είναι εγγεγραμμένος ο χρήστης.
     """
-    course = get_object_or_404(request.user.courses_enrolled, id=course_id)  # Ελέγχουμε ότι ο χρήστης είναι εγγεγραμμένος
-    lessons = course.lessons.all()  # Παίρνουμε τα lessons του μαθήματος
-    return render(request, 'courses/course_lessons.html', {'course': course, 'lessons': lessons})
+    # course = get_object_or_404(request.user.courses_enrolled, id=course_id)  # Ελέγχουμε ότι ο χρήστης είναι εγγεγραμμένος
+    # lessons = course.lessons.all()  # Παίρνουμε τα lessons του μαθήματος
+    # quizzes = course.quizzes.all()
+
+    # return render(
+    #     request,
+    #     'courses/course_lessons.html',
+    #     {
+    #         'course': course,
+    #         'lessons': lessons,
+    #         'quizzes': quizzes
+    #     }
+    # )
+    course = get_object_or_404(Course, id=course_id)
+    lesson_id = request.GET.get('lesson')
+    lesson = None
+    if lesson_id:
+        lesson = course.lessons.filter(id=lesson_id).first()
+    else:
+        lesson = course.lessons.first()
+
+    quizzes = course.quizzes.all()
+
+    return render(request, 'courses/course_lessons.html', {
+        'course': course,
+        'lesson': lesson,
+        'quizzes': quizzes
+    })

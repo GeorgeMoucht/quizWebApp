@@ -1,30 +1,55 @@
-{% extends "core/base.html" %}
-{% load static %}
+{% extends 'core/base.html' %}
+
+{% block title %} Course - My Education App{% endblock %}
 
 {% block content %}
-<h1>Lessons for {{ course.title }}</h1>
-<p>{{ course.description }}</p>
-</br>
-<div class="accordion">
-  {% for lesson in lessons %}
-  <div class="accordion-item">
-      <div class="accordion-header">
-          {{ lesson.title }}
-          <span class="icon">+</span>
-      </div>
-      <div class="accordion-content">
-          <p>{{ lesson.description }}</p>
-          {% if lesson.attachment %}
-          <a href="{{ lesson.attachment.url }}" download>Download Attachment</a>
-          {% endif %}
-      </div>
+<div class="parallax">
+  <div class="parallax-header">
+    <div class="title">{{ course.title }}</div>
+    <div class="description">{{ course.description }}</div>
   </div>
-  {% endfor %}
+  <div class="content">
+    <h1>Course Content</h1>
+    <p>wefasjdfa[sdojfabs</p>
+  </div>
 </div>
-</br> 
-<a href="{% url 'enrolled_courses' %}">Back to Enrolled Courses</a>
-{% endblock %}
+<div class="lessons-container">
+  <!-- Navigation column -->
+  <div class="navigation">
+    <h3>Lessons</h3>
+    <ul>
+      {% for lesson in course.lessons.all %}
+      <li>
+        <a href="?lesson={{ lesson.id }}">{{ lesson.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 
-{% block extra_js %}
-<script src="{% static 'courses/accordion.js' %}"></script>
+  <!-- Content column -->
+   <div class="lesson-content">
+    <h2>{{ lesson.title }}</h2>
+    <p>{{ lesson.description }}</p>
+    {% if lesson.attachment %}
+      <a href="{{ lesson.attachment.url }}" download>Download Attachment</a>
+    {% endif %}
+   </div>
+</div>
+
+<div class="quizzes-container">
+  <h3>Quizzes</h3>
+  {% if quizzes %}
+  <ul>
+    {% for quiz in quizzes %}
+    <li>
+      <h4>{{ quiz.title }}</h4>
+      <p>{{ quiz.summary }}</p>
+      <a href="/quiz/{{ quiz.id }}">Take Quiz</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No quizzes available for this course.</p>
+  {% endif %}
+</div>
 {% endblock %}
