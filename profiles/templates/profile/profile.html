@@ -2,26 +2,19 @@
 
 
 {% block content %}
-<h2>Welcome to your profile {{ profile.user.username }}</h2>
-<p>Email: {{ profile.user.email }}</p>
-<p>Bio: {{ profile.bio }}</p>
-<p>Avatar: <img src="{{ profile.avatar.url }}" alt="Profile Picture" width="150" height="150"><p>
-<form method="POST" enctype="multipart/form-data" style="max-width: 400px;">
-    {% csrf_token %}
-    
-    <h5 style="color: blue;">ΕΠΕΞΕΡΓΑΣΙΑ ΣΤΟΙΧΕΙΩΝ<h5>
-    
-    <div style="margin-bottom: 15px;">
-        <label for="id_bio">Bio:</label>
-        <br>
-        {{ form.bio }}  
-    </div>
-    
-    <div style="margin-bottom: 15px;">      
-        {{ form.avatar }}
-    </div>
-    
-    <button type="submit">Αποθήκευση</button>
-</form>
+
+<div class="container">
+  <div class="header"><h1>Welcome to your profile</h1></div>
+  <div class="menu">
+    <p><img src="{{ profile.avatar.url }}" alt="Profile Picture" width="100" height="100"><p></br>
+    <p><strong>Username:</strong> {{ profile.user.username }}</p></br>
+    <p><strong>Email:</strong> {{ profile.user.email }}</p>
+  </div>
+  <div class="content">
+    <h3>Bio</h3><p>{{ profile.bio }}</p></br>
+    <a href="{% url 'profile_edit_view' %}" class="btn btn-primary">Επεξεργασία Στοιχείων</a>
+  </div>
+</div>
+
 {% endblock %}
 

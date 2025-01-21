@@ -5,32 +5,20 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import ProfileUpdateForm
 
-# Create your views here.
 @login_required
 def profile_view(request):
     """
-    View for displaying the user's profile.
-
-    This view is only accessible to authenticated users. It retrieves
-    the profile related to the logged-in user and renders it on a
-    profile page.
-
-    The user is required to be logged in to view this page. If the user
-    is not logged in, they will be redirected to the login page.
-
-    Args:
-        request (HttpRequest): The request object containing metadata
-            about the current request (e.g., user, session).
-
-    Returns:
-        HttpResponse: The rendered profile page with the user's
-                profile data.
-    
-    Raises:
-        Profile.DoesNotExist: If the user does not have an associated 
-                profile, an exception will be raised.
+    View for displaying the user's profile without the edit form.
     """
-    # profile = request.user.profile
+    profile = Profile.objects.get(user=request.user)
+    context = {'profile': profile}
+    return render(request, 'profile/profile.html', context)
+
+@login_required
+def profile_edit_view(request):
+    """
+    View for editing the user's profile.
+    """
     profile = Profile.objects.get(user=request.user)
     form = ProfileUpdateForm(instance=profile)
 
@@ -38,12 +26,7 @@ def profile_view(request):
         form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('profile_view')  # Προσθέστε το κατάλληλο URL εδώ
+            return redirect('profile_view')  
 
-    context = {
-        'profile': profile,
-        'form': form
-    }
-    
-    return render(request, 'profile/profile.html', context)
-
+    context = {'form': form, 'profile': profile}
+    return render(request, 'profile/edit_profile.html', context)
