@@ -44,7 +44,8 @@
     <li>
       <h4>{{ quiz.title }}</h4>
       <p>{{ quiz.summary }}</p>
-      <a href="/quiz/{{ quiz.id }}">Take Quiz</a>
+      <!-- <a href="courses/quiz/{{ quiz.id }}">Take Quiz</a> -->
+      <a href="{% url 'quiz_page' quiz.id %}">Take Quiz</a>
     </li>
     {% endfor %}
   </ul>

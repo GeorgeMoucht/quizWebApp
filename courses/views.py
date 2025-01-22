@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import Course, Enrollment, Lesson
+from .models import Course, Enrollment, Lesson, Quiz, Question, Answer, Take, TakeAnswer
+from .forms import QuizSubmissionForm
+from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 
 
@@ -99,4 +101,43 @@ def course_lessons_view(request, course_id):
         'course': course,
         'lesson': lesson,
         'quizzes': quizzes
+    })
+
+@login_required
+def quiz_view(request, quiz_id):
+    # Fetch the quiz
+    quiz = get_object_or_404(Quiz, id=quiz_id, published=True)
+
+    # Handle form submission
+    if request.method == "POST":
+        form = QuizSubmissionForm(requset.POST, quiz=quiz)
+        if form.is_valid():
+            # Create a Take instance
+            take = Take.objects.create(
+                user=request.user,
+                quiz=quiz,
+                create_at=now()
+            )
+
+            # Save each answer
+            for question, answer_id in form.cleaned_data.items():
+                if answer_id:
+                    answer = Answer.objects.get(id=answer_id)
+                    TakeAnswer.objects.create(take=take, answer=answer)
+
+            return redirect('quiz_result', take_id=take.id)
+    else:
+        form = QuizSubmissionForm(quiz=quiz)
+
+    return render(request, 'courses/quiz/quiz_page.html', {
+        'quiz': quiz,
+        'form': form
+    })
+
+@login_required
+def quiz_result(request, take_id):
+    take = get_object_or_404(Take, id=take_id, user=request.user)
+
+    return render(request, 'courses/quiz/quiz_result.html', {
+        'take': take,
     })
