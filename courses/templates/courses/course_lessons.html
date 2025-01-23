@@ -13,6 +13,13 @@
     <p>wefasjdfa[sdojfabs</p>
   </div>
 </div>
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <p class="alert {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
 <div class="lessons-container">
   <!-- Navigation column -->
   <div class="navigation">

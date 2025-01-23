@@ -1,32 +1,72 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Course, Enrollment, Lesson, Quiz, Question, Answer, Take, TakeAnswer
 from .forms import QuizSubmissionForm
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
+# @login_required
+# def course_list_view(request):
+#     """
+#     Display a list of all available courses and indicates whether
+#     the logged-in user is already enrolled.
+#     """
+#     user_enrollments = Enrollment.objects.filter(
+#         student_id=request.user
+#     ).values_list('course_id', flat=True)
+
+#     courses = Course.objects.all()
+
+#     return render(
+#         request,
+#         'courses/course_list.html',
+#         {
+#             'courses': courses,
+#             'user_enrollments': set(user_enrollments)
+#         }
+#     )
 
 @login_required
 def course_list_view(request):
-    """
-    Display a list of all available courses and indicates whether
-    the logged-in user is already enrolled.
-    """
-    user_enrollments = Enrollment.objects.filter(
-        student_id=request.user
-    ).values_list('course_id', flat=True)
+    query = request.GET.get('q', '')
+    enrolled_only = request.GET.get('enrolled_only')
 
     courses = Course.objects.all()
 
-    return render(
-        request,
-        'courses/course_list.html',
-        {
-            'courses': courses,
-            'user_enrollments': set(user_enrollments)
-        }
-    )
+    if query:
+        courses = courses.filter(title__icontains=query)
+
+    enrolled_courses = Enrollment.objects.filter(
+        student=request.user
+    ).values_list('course_id', flat=True)
+
+    if enrolled_only == "1":
+        courses = courses.filter(id__in=enrolled_courses)
+
+    # enrollment status of user in courses
+    for course in courses:
+        course.is_enrolled = course.id in enrolled_courses
+
+    return render(request, 'courses/course_list.html', {
+        'courses': courses,
+    })
+
+def course_suggestions(request):
+    query = request.GET.get('q', '')
+
+    # Filter course titles by the query
+    courses = Course.objects.filter(title__icontains=query)[:5]
+
+    # Create a list of results.
+    data = []
+    for course in courses:
+        data.append({
+            'id': course.id,
+            'title': course.title,
+        })
+    return JsonResponse(data, safe=False)
 
 @login_required
 def enroll_course_view(request, course_id):
@@ -49,16 +89,19 @@ def enroll_course_view(request, course_id):
         if course.password and course.password == entered_password:
             # Check if the user is already enrolled
             if Enrollment.objects.filter(course=course, student=request.user).exists():
-                return HttpResponse("You are already enrolled in this course.", status=400)
+                messages.warning(request, "You are already enrolled in the course.")
+                return redirect('course_list')
 
             # Enroll the user in the course (explicitly setting enrolled_at)
             Enrollment.objects.create(
-                course_id=course,
-                student_id=request.user,
+                course=course,
+                student=request.user,
             )
-            return HttpResponse("Enrollment successful")
+            messages.success(request, "Enrollment successful.")
+            return redirect('course_lesson', course_id=course.id)
         else:
-            return HttpResponse("Enrollment failed. Incorrect password.", status=403)
+            messages.error(request, "Enrollment failed. Incorrect password.")
+            return redirect('course_list')
     return redirect('course_list')
 
 @login_required

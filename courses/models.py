@@ -51,6 +51,13 @@ class Course(models.Model):
         blank=True
     )
 
+    image = models.ImageField(
+        upload_to='courses/',
+        null=True,
+        blank=True,
+        help_text="Optional images for the course."
+    )
+
     class Meta:
         # Permissions for users to enroll in courses
         permissions = [

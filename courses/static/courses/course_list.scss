@@ -1,0 +1,203 @@
+.courses-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+  
+    // Large screen (default) layout: search bar on the left, courses on the right
+    .search-bar {
+      flex: 1;
+      max-width: 250px;
+      background: #f8f8f8;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+  
+      h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #333;
+      }
+  
+        form {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                margin-bottom: 0;
+            }
+
+            button {
+                padding: 10px;
+                background: #007bff;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+
+                &:hover {
+                background: #0056b3;
+                }
+            }
+
+            h3 {
+                margin-top: 1rem;
+            }
+
+            .custom-checkbox {
+                display: inline-flex;
+                align-items: center;
+                position: relative;
+                padding-left: 32px;
+                cursor: pointer;
+
+                input[type="checkbox"] {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                    height: 0;
+                    width: 0;
+                    margin: 0;
+                }
+
+                .checkmark {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 20px;
+                    height: 20px;
+                    background-color: #fff;
+                    border: 2px solid #007bff;
+                    border-radius: 3px;
+                    transition: background-color 0.2s ease;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        display: none;
+                        left: 5px;
+                        top: 1px;
+                        width: 5px;
+                        height: 10px;
+                        border: solid #fff;
+                        border-width: 0 2px 2px 0;
+                        transform: rotate(45deg);
+                    }
+                }
+
+                input[type="checkbox"]:checked ~ .checkmark {
+                    background-color: #007bff;
+
+                    &::after {
+                        display: block;
+                    }
+                }
+
+                &:hover .checkmark {
+                    border-color: #0056b3;
+                }
+            }
+
+            .suggestions-box {
+                position: absolute;
+                left: 0;
+                top: 40px;
+                width: 100%;
+                max-width: 300px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                z-index: 999;
+                display: none;
+
+                .suggestion-item {
+                    padding: 8px 10px;
+                    cursor: pointer;
+                    border-bottom: 1px solid #eee;
+
+                    &.highlight {
+                        background-color: #007bff;
+                        color: #fff;
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:hover { 
+                        background-color: #f0f0f0;
+                    }
+                }
+
+                .no-suggestions {
+                    padding: 8px 10px;
+                    color: #999;
+                }
+            }
+        }
+    }
+  
+    .courses-list {
+      flex: 3;
+  
+      .course-item {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+  
+        img {
+          max-width: 150px;
+          height: 150px;
+          border-radius: 5px;
+        }
+  
+        .course-details {
+          h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+          }
+  
+          p {
+            margin-bottom: 10px;
+            color: #666;
+          }
+  
+          .btn {
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+  
+            &:hover {
+              background: #0056b3;
+            }
+          }
+        }
+      }
+    }
+  
+    // Media Query: For smaller screens (e.g., under 768px)
+    @media (max-width: 768px) {
+      flex-direction: column; // Stack vertically
+      .search-bar {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px; // Spacing below the search bar
+      }
+      .courses-list {
+        flex: auto; // Let the course-list grow to fill the remaining space
+      }
+    }
+}
+  
