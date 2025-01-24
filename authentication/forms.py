@@ -5,9 +5,11 @@ import re
 
 
 class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True,label='Όνομα')
-    last_name = forms.CharField(max_length=30, required=True,label='Επώνυμο')
-    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True, label='Όνομα', widget=forms.TextInput(attrs={'placeholder': 'Όνομα'}))
+    last_name = forms.CharField(max_length=30, required=True, label='Επώνυμο', widget=forms.TextInput(attrs={'placeholder': 'Επώνυμο'}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'placeholder': 'Email'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Κωδικός πρόσβασης'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Επαναλάβετε τον κωδικό'}))
 
     class Meta:
         model = User

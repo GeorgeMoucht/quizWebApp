@@ -36,11 +36,7 @@ def register_view(request):
             return redirect('login')
     else:
         form = CustomUserCreationForm()
-    return render(
-        request,
-        'authentication/register.html',
-        {'form': form}
-    )
+    return render(request,'authentication/register.html',{'form': form})
 
 # Login view
 def login_view(request):

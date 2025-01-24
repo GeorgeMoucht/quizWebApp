@@ -14,4 +14,4 @@ def homepage_view(request):
         return HttpResponse(
             "Template not found",
             status=404
-        )
+        )  
