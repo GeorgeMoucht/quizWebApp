@@ -1,19 +1,57 @@
-{% extends 'core/base.html' %}
+{% extends "core/base.html" %}
 
 {% block content %}
-<h2>Register</h2>
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-info">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- Αυτή η γραμμή θα εμφανίσει όλα τα πεδία της φόρμας -->
-    <button type="submit">Register</button>
-</form>
+<div class="register-container">
+  <div class="register-card">
+    <h2>Sign Up</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data" style="max-width: 400px;">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}"><strong>Username:</strong></label>
+            <br>
+            {{ form.username }}  
+        </div>
+    
+        <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}"><strong>Name:</strong></label>
+            <br>
+            {{ form.first_name }}
+        </div>
+    
+        <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}"><strong>Last Name:</strong></label>
+            <br>
+            {{ form.last_name }}
+        </div>
+    
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}"><strong>Email:</strong></label>
+            <br>
+            {{ form.email }}
+        </div>
+    
+        <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}"><strong>Password:</strong></label>
+            <br>
+            {{ form.password1 }}
+        </div>
+    
+        <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}"><strong>Confirm Password:</strong></label>
+            <br>
+            {{ form.password2 }}
+        </div>
+    
+        <button type="submit" class="register-button">Sign Up</button>
+    </form>    
+  </div>
+</div>
 
 {% endblock %}
-
