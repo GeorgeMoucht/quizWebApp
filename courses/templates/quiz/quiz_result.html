@@ -8,7 +8,7 @@
     <h2>{{ quiz.title }}</h2>
 
     <p><strong>Total Questions:</strong> {{ total_questions }}</p>
-    <p><strong>Your Score:</strong> {{ score }} / {{ total_questions }}</p>
+    <p><strong>Your Score:</strong> {{ score }} / {{ total_possible_score }}</p>
 
     <hr>
 
@@ -17,6 +17,7 @@
         {% for question, answers in answers_by_question.items %}
         <li>
             <p><strong>Question:</strong> {{ question.content }}</p>
+            <p><strong>Question Score:</strong> {{ question.score }}</p>
             <ul>
                 {% for user_answer in answers %}
                 <li>

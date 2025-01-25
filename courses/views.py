@@ -223,26 +223,41 @@ def quiz_result(request, take_id):
 
     # Fetch all user answers and group them by question
     user_answers = take.take_answers.select_related('answer', 'answer__question')
+    
     answers_by_question = {}
     for user_answer in user_answers:
-        question = user_answer.answer.question
-        if question not in answers_by_question:
-            answers_by_question[question] = []
-        answers_by_question[question].append(user_answer)
+        question = user_answer.answer.question if user_answer.answer else None
+        if question:
+            if question not in answers_by_question:
+                answers_by_question[question] = []
+            answers_by_question[question].append(user_answer)
 
     # Calculate the score
     total_questions = quiz.questions.count()
-    correct_answers = user_answers.filter(answer__is_correct=True).count()
-    score = correct_answers  # You can adjust scoring logic here
+    total_possible_score = quiz.score
+    total_earned_score = 0
+
+    # score = correct_answers  # You can adjust scoring logic here
+
+    for question, answers in answers_by_question.items():
+        if question.type == Question.MULTIPLE_CHOICE:
+            if all(answer.answer.is_correct for answer in answers):
+                total_earned_score += question.score
+        elif question.type == Question.TRUE_FALSE:
+            if len(answers) == 1 and answers[0].answer.is_correct:
+                total_earned_score += question.score
+        elif question.type == Question.SHORT_ANSWER:
+            total_earned_score += question.score
 
     # Update the Take record
-    if take.score != score:
-        take.score = score
+    if take.score != total_earned_score:
+        take.score = total_earned_score
         take.save()
 
     return render(request, 'quiz/quiz_result.html', {
         'quiz': quiz,
-        'score': score,
+        'score': total_earned_score,
         'total_questions': total_questions,
+        'total_possible_score': total_possible_score,
         'answers_by_question': answers_by_question,
     })
