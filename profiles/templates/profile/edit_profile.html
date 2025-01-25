@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container">
+  <h1>Επεξεργασία Προφίλ</h1>
+  <form method="POST" enctype="multipart/form-data" style="max-width: 400px;">
+    {% csrf_token %}
+    <div style="margin-bottom: 15px;">
+      <label for="id_bio">Bio:</label>
+      {{ form.bio }}
+    </div>
+    <div style="margin-bottom: 15px;">
+      <label for="id_avatar">Avatar:</label>
+      {{ form.avatar }}
+    </div>
+    <button type="submit" class="btn btn-success">Αποθήκευση</button>
+    <a href="{% url 'profile_view' %}" class="btn btn-secondary">Ακύρωση</a>
+  </form>
+</div>
+{% endblock %}
