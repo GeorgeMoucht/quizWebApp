@@ -476,25 +476,29 @@ class TakeAnswer(models.Model):
             models.UniqueConstraint(
                 fields=['take', 'answer'],
                 name='unique_take_answer'
-            )
+            ),
+            # Ensure no duplicate entries for short-answer questions
+            models.UniqueConstraint(
+                fields=['take', 'content'],
+                name='unique_take_content'
+            ),
         ]
+    
 
     def clean(self):
         """
         Custom validation to ensure content is provided for
         open-ended questions.
         """
-        #Check if content is required
-        if self.answer.question.type == self.answer.question.SHORT_ANSWER and not self.content:
+        if self.answer and self.answer.question.type == Question.SHORT_ANSWER and not self.content:
             raise ValidationError("Content is required for short answer questions.")
 
     def __str__(self):
         """
         String representation of the TakeAnswer.
         """
-        return (f"TakeAnswer (Take ID: {self.take.id}, "
-                f"Answer ID: {self.answer.id}, "
-                f"Question: {self.answer.question.content[:50]})")
+        return f"TakeAnswer (Take ID: {self.take.id}, Answer: {self.answer or self.content})"
+
     
       
     

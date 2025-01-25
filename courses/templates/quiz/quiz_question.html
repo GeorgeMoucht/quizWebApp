@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ quiz.title }} - Question {{ question_number }}{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <h1>{{ quiz.title }}</h1>
+    <p><strong>Question {{ question_number }} of {{ total_questions }}</strong></p>
+    <hr>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="question">
+            <p>{{ question.content }}</p>
+
+            {% if question.type == question.MULTIPLE_CHOICE %}
+                {% for answer in question.answers.all %}
+                    <div>
+                        <input 
+                            type="checkbox"
+                            id="answer_{{ answer.id }}"
+                            name="answer"
+                            value="{{ answer.id }}"
+                        >
+                        <label for="answer_{{ answer.id }}">{{ answer.content }}</label>
+                    </div>
+                {% endfor %}
+            {% elif question.type == question.TRUE_FALSE %}
+            <div>
+                <input 
+                    type="radio"
+                    id="true_{{ question.id }}"
+                    name="answer"
+                    value="{{ true_answer.id }}"
+                    required
+                >
+                <label for="true_{{ question.id }}">True</label>
+            </div>
+            <div>
+                <input 
+                    type="radio"
+                    id="false_{{ question.id }}"
+                    name="answer"
+                    value="{{ false_answer.id }}"
+                    required
+                >
+                <label for="false_{{ question.id }}">False</label>
+            </div>
+            {% elif question.type == question.SHORT_ANSWER %}
+                <textarea 
+                    name="answer"
+                    placeholder="Type your answer here"
+                    rows="4"
+                    required
+                ></textarea>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {% if question_number == total_questions %}Submit{% else %}Next{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -5,6 +5,7 @@ from .forms import QuizSubmissionForm
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from collections import defaultdict
 
 
 # @login_required
@@ -147,40 +148,101 @@ def course_lessons_view(request, course_id):
     })
 
 @login_required
-def quiz_view(request, quiz_id):
-    # Fetch the quiz
+def quiz_question(request, quiz_id, question_number):
+    # Fetch the quiz and ensure it's published
     quiz = get_object_or_404(Quiz, id=quiz_id, published=True)
 
+    # Fetch all questions for this quiz, ordered by their creation
+    questions = quiz.questions.all().order_by('id')
+
+    # Ensure the question number is valid
+    if question_number < 1 or question_number > questions.count():
+        return redirect('quiz_page', quiz_id=quiz.id)
+
+    # Get the current question
+    question = questions[question_number - 1]
+
+    # Pre-calculate answers for True/False questions
+    true_answer = None
+    false_answer = None
+    if question.type == Question.TRUE_FALSE:
+        true_answer = question.answers.filter(is_correct=True).first()
+        false_answer = question.answers.filter(is_correct=False).first()
+
     # Handle form submission
-    if request.method == "POST":
-        form = QuizSubmissionForm(requset.POST, quiz=quiz)
-        if form.is_valid():
-            # Create a Take instance
-            take = Take.objects.create(
-                user=request.user,
-                quiz=quiz,
-                create_at=now()
-            )
+    if request.method == 'POST':
+        user_answers = request.POST.getlist('answer')  # For multiple-choice questions
+        take, _ = Take.objects.get_or_create(user=request.user, quiz=quiz)
 
-            # Save each answer
-            for question, answer_id in form.cleaned_data.items():
-                if answer_id:
-                    answer = Answer.objects.get(id=answer_id)
-                    TakeAnswer.objects.create(take=take, answer=answer)
+        if question.type == Question.SHORT_ANSWER:
+            user_answer = request.POST.get('answer')
+            if user_answer:
+                TakeAnswer.objects.update_or_create(
+                    take=take,
+                    answer=None,
+                    content=user_answer,
+                    defaults={'created_at': now()}
+                )
+        else:
+            for user_answer in user_answers:
+                answer = question.answers.filter(id=user_answer).first()
+                if answer:
+                    TakeAnswer.objects.update_or_create(
+                        take=take,
+                        answer=answer,
+                        defaults={'content': answer.content, 'created_at': now()}
+                    )
 
+        if question_number < questions.count():
+            return redirect('quiz_question', quiz_id=quiz.id, question_number=question_number + 1)
+        else:
             return redirect('quiz_result', take_id=take.id)
-    else:
-        form = QuizSubmissionForm(quiz=quiz)
 
-    return render(request, 'courses/quiz/quiz_page.html', {
+    return render(request, 'quiz/quiz_question.html', {
         'quiz': quiz,
-        'form': form
+        'question': question,
+        'question_number': question_number,
+        'total_questions': questions.count(),
+        'true_answer': true_answer,
+        'false_answer': false_answer,
     })
+
+
+
+@login_required
+def redirect_to_first_question(request, quiz_id):
+    """
+    Redirects to the first question of the quiz.
+    """
+    return redirect('quiz_question', quiz_id=quiz_id, question_number=1)
 
 @login_required
 def quiz_result(request, take_id):
     take = get_object_or_404(Take, id=take_id, user=request.user)
+    quiz = take.quiz
 
-    return render(request, 'courses/quiz/quiz_result.html', {
-        'take': take,
+    # Fetch all user answers and group them by question
+    user_answers = take.take_answers.select_related('answer', 'answer__question')
+    answers_by_question = {}
+    for user_answer in user_answers:
+        question = user_answer.answer.question
+        if question not in answers_by_question:
+            answers_by_question[question] = []
+        answers_by_question[question].append(user_answer)
+
+    # Calculate the score
+    total_questions = quiz.questions.count()
+    correct_answers = user_answers.filter(answer__is_correct=True).count()
+    score = correct_answers  # You can adjust scoring logic here
+
+    # Update the Take record
+    if take.score != score:
+        take.score = score
+        take.save()
+
+    return render(request, 'quiz/quiz_result.html', {
+        'quiz': quiz,
+        'score': score,
+        'total_questions': total_questions,
+        'answers_by_question': answers_by_question,
     })
