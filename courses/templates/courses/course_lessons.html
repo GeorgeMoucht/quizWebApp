@@ -48,11 +48,16 @@
   {% if quizzes %}
   <ul>
     {% for quiz in quizzes %}
-    <li>
-      <h4>{{ quiz.title }}</h4>
-      <p>{{ quiz.summary }}</p>
-      <!-- <a href="courses/quiz/{{ quiz.id }}">Take Quiz</a> -->
-      <a href="{% url 'quiz_page' quiz.id %}">Take Quiz</a>
+    <li class="quiz-item">
+      <div class="quiz-header">
+        <h4>{{ quiz.title }}</h4>
+        <p class="quiz-summary">
+          {{ quiz.summary }}
+        </p>
+        <div class="quiz-actions">
+          <a href="{% url 'quiz_page' quiz.id %}">Take Quiz</a>
+        </div>
+      </div>
     </li>
     {% endfor %}
   </ul>
