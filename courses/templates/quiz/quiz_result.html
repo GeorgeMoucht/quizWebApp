@@ -4,36 +4,41 @@
 
 {% block content %}
 <div class="quiz-results-container">
-    <h1>Quiz Results</h1>
-    <h2>{{ quiz.title }}</h2>
+    <div class="header">
+        <h1>Quiz Results</h1>
+        <h2>{{ quiz.title }}</h2>
+        <div class="score-summary">
+            <p><strong>Total Questions:</strong> {{ total_questions }}</p>
+            <p><strong>Your Score:</strong> {{ score }} / {{ total_possible_score }}</p>
+        </div>
+    </div>
 
-    <p><strong>Total Questions:</strong> {{ total_questions }}</p>
-    <p><strong>Your Score:</strong> {{ score }} / {{ total_possible_score }}</p>
+    <div class="answers-section">
+        <h3>Your Answers</h3>
+        <ul class="questions-list">
+            {% for question, answers in answers_by_question.items %}
+            <li class="question-item">
+                <p class="question-text"><strong>Question:</strong> {{ question.content }}</p>
+                <p class="question-score"><strong>Question Score:</strong> {{ question.score }}</p>
+                <ul class="answers-list">
+                    {% for user_answer in answers %}
+                    <li class="answer-item">
+                        <strong>{{ user_answer.answer.content }}</strong>
+                        {% if user_answer.answer.is_correct %}
+                            <span class="correct">(Correct)</span>
+                        {% else %}
+                            <span class="incorrect">(Incorrect)</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <hr>
-
-    <h3>Your Answers</h3>
-    <ul>
-        {% for question, answers in answers_by_question.items %}
-        <li>
-            <p><strong>Question:</strong> {{ question.content }}</p>
-            <p><strong>Question Score:</strong> {{ question.score }}</p>
-            <ul>
-                {% for user_answer in answers %}
-                <li>
-                    <strong>{{ user_answer.answer.content }}</strong>
-                    {% if user_answer.answer.is_correct %}
-                        <span style="color: green;">(Correct)</span>
-                    {% else %}
-                        <span style="color: red;">(Incorrect)</span>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'course_lesson' quiz.course.id %}" class="btn btn-primary">Back to Course</a>
+    <div class="navigation">
+        <a href="{% url 'course_lesson' quiz.course.id %}" class="btn btn-primary">Back to Course</a>
+    </div>
 </div>
 {% endblock %}
