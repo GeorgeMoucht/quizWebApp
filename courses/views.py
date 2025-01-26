@@ -152,12 +152,21 @@ def quiz_question(request, quiz_id, question_number):
     # Fetch the quiz and ensure it's published
     quiz = get_object_or_404(Quiz, id=quiz_id, published=True)
 
+    # Check if the user already completed the quiz
+    existing_take = Take.objects.filter(user=request.user, quiz=quiz).first()
+    if existing_take and existing_take.finished_at:
+        messages.info(request, "You have already completed this quiz.")
+        return redirect('quiz_result', take_id=existing_take.id)
+
     # Fetch all questions for this quiz, ordered by their creation
     questions = quiz.questions.all().order_by('id')
 
     # Ensure the question number is valid
     if question_number < 1 or question_number > questions.count():
         return redirect('quiz_page', quiz_id=quiz.id)
+
+    # Get or create a new Take for the user if not already started
+    take, _ = Take.objects.get_or_create(user=request.user, quiz=quiz)
 
     # Get the current question
     question = questions[question_number - 1]
@@ -172,7 +181,6 @@ def quiz_question(request, quiz_id, question_number):
     # Handle form submission
     if request.method == 'POST':
         user_answers = request.POST.getlist('answer')  # For multiple-choice questions
-        take, _ = Take.objects.get_or_create(user=request.user, quiz=quiz)
 
         if question.type == Question.SHORT_ANSWER:
             user_answer = request.POST.get('answer')
@@ -196,6 +204,9 @@ def quiz_question(request, quiz_id, question_number):
         if question_number < questions.count():
             return redirect('quiz_question', quiz_id=quiz.id, question_number=question_number + 1)
         else:
+            # Mark the quiz as completed
+            take.finished_at = now()
+            take.save()
             return redirect('quiz_result', take_id=take.id)
 
     return render(request, 'quiz/quiz_question.html', {
@@ -206,7 +217,6 @@ def quiz_question(request, quiz_id, question_number):
         'true_answer': true_answer,
         'false_answer': false_answer,
     })
-
 
 
 @login_required

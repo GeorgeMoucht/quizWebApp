@@ -55,7 +55,12 @@
           {{ quiz.summary }}
         </p>
         <div class="quiz-actions">
-          <a href="{% url 'quiz_page' quiz.id %}">Take Quiz</a>
+          {% if take.finished_at %}
+            <a href="{% url 'quiz_result' take.id %}">View your results</a>
+          {% else %}
+            <a href="{% url 'quiz_page' quiz.id %}">Start Quiz</a>
+          {% endif %}
+          <!-- <a href="{% url 'quiz_page' quiz.id %}">Take Quiz</a> -->
         </div>
       </div>
     </li>
