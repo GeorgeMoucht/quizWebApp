@@ -10,5 +10,5 @@ urlpatterns = [
 
     path('quiz/<int:quiz_id>/', views.redirect_to_first_question, name='quiz_page'),
     path('quiz/<int:quiz_id>/question/<int:question_number>/', views.quiz_question, name='quiz_question'),
-    path('quiz/result/<int:take_id>/', views.quiz_result, name="quiz_result")
+    path('quiz/result/<int:take_id>/', views.quiz_result, name="quiz_result"),
 ]
