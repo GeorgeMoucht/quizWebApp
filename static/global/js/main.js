@@ -4,8 +4,8 @@ function toggleMenu() {
     const hamburger = document.querySelector('.hamburger');
     const profileMenu = document.querySelector('.profile-menu');
 
-    // Close the profile dropdown if it's open
-    if (profileMenu.classList.contains('open')) {
+    // Close the profile dropdown if it exists and is open
+    if (profileMenu && profileMenu.classList.contains('open')) {
         profileMenu.classList.remove('open');
     }
 
