@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ quiz.title }} - Question {{ question_number }}{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <h1>{{ quiz.title }}</h1>
+    <p class="progress-indicator">Question {{ question_number }} of {{ total_questions }}</p>
+    <hr>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="question">
+            <p class="question-content">{{ question.content }}</p>
+
+            {% if question.type == question.MULTIPLE_CHOICE %}
+                <div class="answers">
+                    {% for answer in question.answers.all %}
+                    <div class="answer-item">
+                        <input 
+                            type="checkbox"
+                            id="answer_{{ answer.id }}"
+                            name="answer"
+                            value="{{ answer.id }}"
+                        >
+                        <label for="answer_{{ answer.id }}">{{ answer.content }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif question.type == question.TRUE_FALSE %}
+                <div class="answers">
+                    <div class="answer-item">
+                        <input 
+                            type="radio"
+                            id="true_{{ question.id }}"
+                            name="answer"
+                            value="{{ true_answer.id }}"
+                            required
+                        >
+                        <label for="true_{{ question.id }}">True</label>
+                    </div>
+                    <div class="answer-item">
+                        <input 
+                            type="radio"
+                            id="false_{{ question.id }}"
+                            name="answer"
+                            value="{{ false_answer.id }}"
+                            required
+                        >
+                        <label for="false_{{ question.id }}">False</label>
+                    </div>
+                </div>
+            {% elif question.type == question.SHORT_ANSWER %}
+                <textarea 
+                    name="answer"
+                    placeholder="Type your answer here"
+                    rows="4"
+                    required
+                ></textarea>
+            {% endif %}
+        </div>
+
+        <div class="navigation">
+            <button type="submit" class="btn btn-primary">
+                {% if question_number == total_questions %}Submit{% else %}Next{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

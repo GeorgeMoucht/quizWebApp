@@ -34,6 +34,12 @@ class Migration(migrations.Migration):
                 )),
 
                 ('password', models.CharField(max_length=100, null=True, blank=True)),
+                ('image', models.ImageField(
+                    upload_to='courses/',
+                    null=True,
+                    blank=True,
+                    help_text="Optional image for the course."
+                ))
             ],
             options={
                 'permissions': [('enroll_in_course', 'Can enroll in course')],

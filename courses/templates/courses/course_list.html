@@ -1,45 +1,88 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
-{% block title %}Home - My Education App{% endblock %}
+{% block title %} Course List - My Education App{% endblock %}
 
 {% block content %}
-    <h1>Available Courses</h1>
 
-    {% if courses %}
-        <ul>
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <p class="alert {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="courses-container">
+    <!-- Search bar Section -->
+    <div class="search-bar">
+        <h3>Search Courses</h3>
+        <form method="get" action="" id="searchForm">
+            <input
+                id="searchInput"
+                type="text"
+                name="q"
+                placeholder="Search for courses"
+                value="{{ request.GET.q|default:'' }}"
+                autocomplete="off"
+            />
+            <!-- <button type="submit">Search</button> -->
+            <div id="suggestionBox" class="suggestions-box"></div>
+
+
+            <h3>Filters</h3>
+
+            <label class="custom-checkbox">
+                <input
+                    type="checkbox"
+                    name="enrolled_only"
+                    value="1"
+                    {% if request.GET.enrolled_only == "1" %}checked{% endif %}
+                    onchange="this.form.submit()"
+                />
+                <span class="checkmark"></span>
+                Only enrolled courses
+            </label>
+        </form>
+    </div>
+
+    <!-- Courses List Section -->
+    <div class="courses-list">
+        {% if courses %}
             {% for course in courses %}
-                <li>
-                    <h2>{{ course.title }}</h2>
-                    <p>{{ course.description }}</p>
-                    <p>
-                        <strong>Teacher:</strong> {{ course.teacher }}
-                    </p>
+                <div class="course-item">
+                    <img src="{{ course.image.url }}" alt="{{ course.title }}">
+                    <div class="course-details">
+                        <h4>{{ course.title }}</h4>
+                        <p>Teacher: {{ course.teacher }}</p>
+                        <p>{{ course.description|truncatewords:20 }}</p>
 
-                    {% if course.id in user_enrollments %}
-                        <p>You are already enrolled in this course.</p>
-                    {% else %}
-                        <form 
-                            method="post"
-                            action="{% url 'enroll_course' course.id %}"
-                        >
-                            {% csrf_token %}
-                            <label for="password-{{ course.id }}">
-                                Enter Course Password:
-                            </label>
-                            <input
-                                type="password"
-                                id="password-{{ corse.id }}"
-                                name="password"
-                                placeholder="Enter course password"
-                                required
-                            >
-                            <button type="submit">Enroll</button>
-                        </form>
-                    {% endif %}
-                </li>
+                        {% if course.is_enrolled %}
+                            <!-- If user is enrolled -->
+                            <a href="{% url 'course_lesson' course.id %}" class="btn btn-primary">
+                                Enter to Course
+                            </a>
+                        {% else %}
+                            <!-- If user is not enrolled -->
+                            <button class="btn btn-primary enroll-button" data-course-id="{{ course.id }}">
+                                Enroll to Course 
+                            </button>
+                            <form method="post" action="{% url 'enroll_course' course.id %}" class="enroll-form" style="display: none;">
+                                {% csrf_token %}
+                                <input type="password" name="password" placeholder="Enter course password" required>
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p>No courses are currently available.</p>
-    {% endif %}
+        {% else %}
+            <p>No courses found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'courses/course_list.js' %}"></script>
 {% endblock %}
