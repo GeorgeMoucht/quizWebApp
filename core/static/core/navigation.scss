@@ -195,20 +195,30 @@
         }
 
         .right-links {
-            position: absolute;
-            top: 0;
-            right: 10px;
-            display: flex;
-            align-items: center;
+            width: 100%;
+
+            ul {
+                flex-direction: column;
+                text-align: center;
+                margin-top: 10px;
+
+                li {
+                    margin: 0;
+
+                    a {
+                        display: block;
+                        padding: 1rem;
+                        border-top: 1px solid #444;
+
+                        &:hover {
+                            background-color: $hover-color;
+                            color: $primary-color;
+                        }
+                    }
+                }
+            }
         }
     }
-
-    .profile-menu {
-        // right: -20px;
-        right: 5rem;
-        // left: -20px;
-    }
-
     .hamburger {
         display: block;
         position: relative;
