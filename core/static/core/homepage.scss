@@ -1,0 +1,113 @@
+.welcome-section {
+  text-align: center;
+  background-color: #f4f4f4;
+  padding: 50px 20px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 800px;
+
+  h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #34495e;
+    line-height: 1.5;
+  }
+}
+
+.popular-courses {
+  margin-top: 40px;
+  text-align: center;
+  background-color: #f4f4f4;
+  padding: 50px 20px;
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 800px;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .courses-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    .course-card {
+      background-color: #f4f4f4;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      width: 200px;
+      height: 270px; /* Καθορίζει το ίδιο ύψος για όλες τις κάρτες */
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative; /* Απαραίτητο για το tooltip */
+      display: flex;
+      flex-direction: column; /* Για να στοιχίζονται τα στοιχεία κάθετα */
+      justify-content: space-between; /* Ισομοιρασμένο περιεχόμενο */
+
+      h3 {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        overflow: hidden; /* Αν το περιεχόμενο είναι μεγαλύτερο, να μη "ξεχειλίζει" */
+        text-overflow: ellipsis;
+        white-space: nowrap; /* Εμφανίζει μόνο μία γραμμή */
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: #34495e;
+        overflow: hidden; /* Αν το περιεχόμενο είναι μεγαλύτερο, να μη "ξεχειλίζει" */
+        text-overflow: ellipsis;
+        display: -webkit-box; /* Υποστήριξη για webkit */
+        display: box; /* Τυπική ιδιότητα */
+        -webkit-line-clamp: 3; /* Περιορισμός στις 3 γραμμές */
+        line-clamp: 3; /* Τυπική ιδιότητα */
+        -webkit-box-orient: vertical; /* Webkit orientation */
+        box-orient: vertical;
+      }
+
+      .course-image {
+        width: 100%;
+        height: 135px;
+        object-fit: cover; /* Κάνει την εικόνα να καλύπτει την περιοχή της χωρίς να παραμορφώνεται */
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      /* Tooltip */
+      &:hover::after {
+        content: attr(data-tooltip); /* Παίρνει το περιεχόμενο από το attribute */
+        position: absolute;
+        bottom: 110%; /* Λίγο πιο πάνω από την κάρτα */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 0.85rem;
+        text-align: center;
+        width: 250px;
+        white-space: normal; /* Επιτρέπει να εμφανίζεται σε πολλές γραμμές */
+        z-index: 10;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+
+      &:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+}
