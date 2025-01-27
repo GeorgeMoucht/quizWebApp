@@ -61,6 +61,54 @@ def create_test_courses(apps, schema_editor):
                 save=True
             )
 
+    # 3. Create "Physic" Course (new course)
+    physic_course = Course.objects.create(
+        title='Physic',
+        description=(
+            'An introduction to the principles of physics. Covering topics such as mechanics, energy, and forces.'
+        ),
+        teacher=test_teacher,
+        password='physic123'
+    )
+
+    # Attach image to "Physic" course (if needed)
+    physic_image_path = os.path.join(
+        os.path.dirname(__file__),
+        '../../media/courses/physic_image.jpg'
+    )
+
+    if os.path.exists(physic_image_path):
+        with open(physic_image_path, 'rb') as physic_img_file:
+            physic_course.image.save(
+                'physic_image.jpg',
+                File(physic_img_file),
+                save=True
+            )    
+
+     # 4. Create "Geography" Course (new course)
+    geography_course = Course.objects.create(
+        title='Geography',
+        description=(
+            'Explore the world’s physical features, climates, and the relationship between people and their environment.'
+        ),
+        teacher=test_teacher,
+        password='geography123'
+    )
+
+    # Attach image to "Geography" course (if needed)
+    geography_image_path = os.path.join(
+        os.path.dirname(__file__),
+        '../../media/courses/geography_image.jpg'
+    )
+
+    if os.path.exists(geography_image_path):
+        with open(geography_image_path, 'rb') as geography_img_file:
+            geography_course.image.save(
+                'geography_image.jpg',
+                File(geography_img_file),
+                save=True
+            )            
+
 class Migration(migrations.Migration):
 
     dependencies = [
