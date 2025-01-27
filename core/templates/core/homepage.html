@@ -10,7 +10,7 @@
 
 <div class="popular-courses">
     <h2>Most Popular Courses</h2>
-    <div class="courses-container">
+    <div class="courses-container-pop">
         {% for course in popular_courses %}
         <div class="course-card" data-tooltip="{{ course.description }}">
             <img src="{{ course.image.url }}" class="course-image">
