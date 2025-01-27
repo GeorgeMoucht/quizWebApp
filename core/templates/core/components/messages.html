@@ -1,0 +1,8 @@
+<!-- Global Messages -->
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <p class="alert {{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
