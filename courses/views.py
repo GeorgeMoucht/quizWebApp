@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from collections import defaultdict
+from django.contrib.auth.models import User, Group
 
 
 # @login_required
@@ -271,3 +272,18 @@ def quiz_result(request, take_id):
         'total_possible_score': total_possible_score,
         'answers_by_question': answers_by_question,
     })
+
+
+
+def teachers_view(request):
+    """
+    View for displaying the list of teachers.
+
+    This view fetches all users that belong to the 'teachers' group
+    and renders them in the 'teachers.html' template.
+    """
+    # Ανάκτηση του group των teachers
+    teachers_group = Group.objects.get(name="Teacher")
+    teachers = teachers_group.user_set.all()  # Παίρνουμε τους χρήστες του group
+
+    return render(request, 'courses/teachers.html', {'teachers': teachers})
